@@ -1,4 +1,4 @@
-# Prototyp: Systems zur datengestützten Problemidentifikation am Beispiel "The Sandbox City: Heidelberg"
+# Prototyp: System zur datengestützten Problemidentifikation am Beispiel "The Sandbox City: Heidelberg"
 
 Dieses Repository enthält den praktischen Teil meiner Bachelorarbeit. Es handelt sich um eine webbasierte Anwendung zur Vernetzung von Stadtverwaltung, Wirtschaft und Forschung, um Wissensmanagement auf kommunaler Ebene zu optimieren.
 
@@ -21,19 +21,10 @@ Dieser Prototyp adressiert dieses Problem durch:
 
 ## Technologien
 
-* **Frontend:** [z.B. React / Vue / HTML5 & CSS3]
-* **Backend:** [z.B. Node.js / Python Flask / PHP]
-* **Datenbank:** [z.B. MongoDB / PostgreSQL / MySQL]
-* **Agenten-Logik:** [z.B. Python-basierte Suchalgorithmen / LangChain / etc.]
-
-## Installation & Setup
-
-Um den Prototyp lokal auszuführen, folge diesen Schritten:
-
-1. **Repository klonen**
-   ```bash
-   git clone [https://github.com/dein-nutzername/bachelorarbeit-prototyp.git](https://github.com/dein-nutzername/bachelorarbeit-prototyp.git)
-   cd bachelorarbeit-prototyp
+* **Frontend:** Next.js
+* **Backend:** TODO
+* **Datenbank:** TODO
+* **Agenten-Logik:** TODO
 
 ## Installation und Ausführung
 
