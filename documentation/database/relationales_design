@@ -1,18 +1,17 @@
 In dieser Datei wird die Datenbank beschrieben. Eine ausführlichere Beschreibung ist im Diagram, welches ebenfalls in diesen Ordner auffindbar ist.
 
 
-- Benutzer müssen sich anmelden können und eine Rolle besitzen
-- Benutzer, die zu einer Organisation gehören, haben einen Forschungsschwerpunkt.
-- Benutzer können sich Projekte merken
--Projekte können weiterentwickelt werden
-- Projekte gehören mindestens einen Benutzer
-- Jeder Benutzer hat in einem Projekt eine Rolle, sofern dieser beteiligt ist.
-- Benutzer können Probleme dokumentieren. Diese werden anschließend durch einen Agenten auf Ähnlichkeit zu einem Projekt verglichen.
-
 RE:
 
-Users(user_id, username, email, password_hash)
-projects(project_id, title, last_update)
-project_relations(project_id, #user_id, role)
-project_details(#project_id, description, website_url, ...)
+User(user_id, name, prename, title, email, description, network)
+user_organization(#user_id, city, organization, role)               | Firmen/Forschungseinrichtungen bei denen die Person beschäftigt ist
+user_field(#user_id, field, description)                            | ermöglicht mehrere Schwerpunkte
+user_connection(#user_id, economic, science, social)                | Design der Verbindung zwischen Wissenschaft und Wirtschaft
+
+last_contact(#user_id, time_stamp, description)
+
+projects(project_id, title)                                                                             | Projekt mit Statusabfrage (Sandboxstatus: Test in HD, Challenge, ...)
+project_relations(#project_id, #user_id, role)
+project_details(#project_id, description, starte_date, end_date, state, last_update, website_url, ...)
+
 problems(problem_id, #user_id, title, description, ...)
