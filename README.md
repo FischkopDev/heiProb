@@ -23,7 +23,7 @@ Dieser Prototyp adressiert dieses Problem durch:
 
 * **Frontend:** Next.js
 * **Backend:** TODO
-* **Datenbank:** TODO
+* **Datenbank:** Prisma and PostgreSQL
 * **Agenten-Logik:** TODO
 
 ## Installation und Ausführung
