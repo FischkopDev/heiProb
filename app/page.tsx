@@ -1,10 +1,16 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { 
   LayoutGrid, AlertCircle, Users, Briefcase, Search, Plus, 
   MessageSquare, Sparkles, ArrowRight, CheckCircle2, Circle
 } from 'lucide-react';
+import ProblemDatabaseView from './ProblemDatabaseView';
+import ExpertenNetzwerkView from './ExpertenNetzwerkView';
 
 export default function EnhancedDashboardMockup() {
+  const [activeView, setActiveView] = useState<'sandbox' | 'database' | 'experten'>('sandbox');
+
   return (
     <div className="flex h-screen bg-slate-50 font-sans text-slate-900">
       
@@ -18,15 +24,27 @@ export default function EnhancedDashboardMockup() {
         </div>
         <nav className="flex-1 px-4 space-y-2">
           <p className="text-xs font-semibold text-slate-500 uppercase px-3 py-2">Navigation</p>
-          <a href="#" className="flex items-center gap-3 p-3 bg-blue-600/10 text-blue-400 rounded-lg font-medium">
+          <button
+            type="button"
+            onClick={() => setActiveView('database')}
+            className={`flex items-center gap-3 p-3 rounded-lg transition w-full text-left ${activeView === 'database' ? 'bg-blue-600/10 text-blue-400 font-medium' : 'text-slate-300 hover:bg-slate-800'}`}
+          >
             <AlertCircle size={20} /> Problem-Datenbank
-          </a>
-          <a href="#" className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-lg transition">
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveView('sandbox')}
+            className={`flex items-center gap-3 p-3 rounded-lg transition w-full text-left ${activeView === 'sandbox' ? 'bg-blue-600/10 text-blue-400 font-medium' : 'text-slate-300 hover:bg-slate-800'}`}
+          >
             <Briefcase size={20} /> Sandbox-Projekte
-          </a>
-          <a href="#" className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-lg transition">
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveView('experten')}
+            className={`flex items-center gap-3 p-3 rounded-lg transition w-full text-left ${activeView === 'experten' ? 'bg-blue-600/10 text-blue-400 font-medium' : 'text-slate-300 hover:bg-slate-800'}`}
+          >
             <Users size={20} /> Experten-Netzwerk
-          </a>
+          </button>
         </nav>
         <div className="p-4 bg-slate-800 m-4 rounded-xl border border-slate-700">
           <p className="text-xs text-slate-400 mb-2">Sandbox-Status Heidelberg</p>
@@ -63,78 +81,86 @@ export default function EnhancedDashboardMockup() {
           
           {/* LEFT: CONTENT AREA */}
           <div className="flex-1 p-8 overflow-y-auto">
-            <div className="mb-8">
-              <h1 className="text-2xl font-bold">Sandbox-City Heidelberg Dashboard</h1>
-              <p className="text-slate-500">Überblick der aktuellen städtischen Herausforderungen und Projektstadien.</p>
-            </div>
-
-            {/* PHASES OVERVIEW (Visual Stages) */}
-            <div className="grid grid-cols-5 gap-4 mb-8">
-              {['Initialisierung', 'Konzeption', 'Reallabor', 'Evaluierung', 'Verstetigung'].map((phase, idx) => (
-                <div key={phase} className={`p-3 rounded-lg border text-center ${idx === 2 ? 'bg-blue-50 border-blue-200' : 'bg-white border-slate-200'}`}>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Phase {idx + 1}</p>
-                  <p className={`text-xs font-semibold ${idx === 2 ? 'text-blue-700' : 'text-slate-600'}`}>{phase}</p>
+            {activeView === 'sandbox' ? (
+              <>
+                <div className="mb-8">
+                  <h1 className="text-2xl font-bold">Sandbox-City Heidelberg Dashboard</h1>
+                  <p className="text-slate-500">Überblick der aktuellen städtischen Herausforderungen und Projektstadien.</p>
                 </div>
-              ))}
-            </div>
 
-            {/* TABLE */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
-                <h3 className="font-bold">Aktive Challenges</h3>
-                <span className="text-xs text-slate-400">12 offene Probleme gefunden</span>
-              </div>
-              <table className="w-full text-left border-collapse text-sm">
-                <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold">
-                  <tr>
-                    <th className="p-4">Herausforderung / Problem</th>
-                    <th className="p-4">Aktuelles Stadium</th>
-                    <th className="p-4">Akteure</th>
-                    <th className="p-4 text-right">Mehrwert</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  <tr className="hover:bg-slate-50 transition">
-                    <td className="p-4">
-                      <div className="font-bold text-slate-800">Nachhaltige Bewässerung Neckarwiese</div>
-                      <div className="text-xs text-slate-500">Umwelt • Wissenschaft • <span className="text-blue-600">ID: HD-102</span></div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 size={16} className="text-green-500" />
-                        <span className="text-xs font-medium">Reallabor-Phase</span>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex -space-x-2">
-                        <div className="w-7 h-7 rounded-full bg-indigo-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">Uni</div>
-                        <div className="w-7 h-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">W-HD</div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-right">
-                      <span className="text-xs font-bold text-blue-600">+8.2% Ressourceneffizienz</span>
-                    </td>
-                  </tr>
-                  {/* Additional row for unlinked problem */}
-                  <tr className="bg-red-50/30">
-                    <td className="p-4">
-                      <div className="font-bold text-red-800 flex items-center gap-2">
-                        Lärmbelastung Weststadt <AlertCircle size={14} />
-                      </div>
-                      <div className="text-xs text-slate-500">Zivilgesellschaft • <span className="font-semibold">Ungelöst</span></div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2 text-slate-400 italic">
-                        <Circle size={16} />
-                        <span className="text-xs">Noch kein Projekt</span>
-                      </div>
-                    </td>
-                    <td className="p-4 text-slate-400 text-xs italic">Warte auf Experten-Matching</td>
-                    <td className="p-4 text-right">—</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                {/* PHASES OVERVIEW (Visual Stages) */}
+                <div className="grid grid-cols-3 gap-4 mb-8">
+                  {['Test in Heidelberg', 'Challenge in Heidelberg', 'Sandbox Areale'].map((phase, idx) => (
+                    <div key={phase} className={`p-3 rounded-lg border text-center ${idx === 1 ? 'bg-blue-50 border-blue-200' : 'bg-white border-slate-200'}`}>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase">Phase {idx + 1}</p>
+                      <p className={`text-xs font-semibold ${idx === 1 ? 'text-blue-700' : 'text-slate-600'}`}>{phase}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* TABLE */}
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                    <h3 className="font-bold">Aktive Challenges</h3>
+                    <span className="text-xs text-slate-400">12 offene Probleme gefunden</span>
+                  </div>
+                  <table className="w-full text-left border-collapse text-sm">
+                    <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold">
+                      <tr>
+                        <th className="p-4">Herausforderung / Problem</th>
+                        <th className="p-4">Aktuelles Stadium</th>
+                        <th className="p-4">Akteure</th>
+                        <th className="p-4 text-right">Mehrwert</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      <tr className="hover:bg-slate-50 transition">
+                        <td className="p-4">
+                          <div className="font-bold text-slate-800">Nachhaltige Bewässerung Neckarwiese</div>
+                          <div className="text-xs text-slate-500">Umwelt • Wissenschaft • <span className="text-blue-600">ID: HD-102</span></div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 size={16} className="text-green-500" />
+                            <span className="text-xs font-medium">Reallabor-Phase</span>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex -space-x-2">
+                            <div className="w-7 h-7 rounded-full bg-indigo-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">Uni</div>
+                            <div className="w-7 h-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">W-HD</div>
+                          </div>
+                        </td>
+                        <td className="p-4 text-right">
+                          <span className="text-xs font-bold text-blue-600">+8.2% Ressourceneffizienz</span>
+                        </td>
+                      </tr>
+                      {/* Additional row for unlinked problem */}
+                      <tr className="bg-red-50/30">
+                        <td className="p-4">
+                          <div className="font-bold text-red-800 flex items-center gap-2">
+                            Lärmbelastung Weststadt <AlertCircle size={14} />
+                          </div>
+                          <div className="text-xs text-slate-500">Zivilgesellschaft • <span className="font-semibold">Ungelöst</span></div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-2 text-slate-400 italic">
+                            <Circle size={16} />
+                            <span className="text-xs">Noch kein Projekt</span>
+                          </div>
+                        </td>
+                        <td className="p-4 text-slate-400 text-xs italic">Warte auf Experten-Matching</td>
+                        <td className="p-4 text-right">—</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            ) : activeView === 'database' ? (
+              <ProblemDatabaseView />
+            ) : (
+              <ExpertenNetzwerkView />
+            )}
           </div>
 
           {/* RIGHT: AGENT PANEL (Proaktiver Vermittler) */}

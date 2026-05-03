@@ -11,7 +11,7 @@ user_connection(#user_id, economic, science, social)                | Design der
 last_contact(#user_id, time_stamp, description)
 
 projects(project_id, title)                                                                             | Projekt mit Statusabfrage (Sandboxstatus: Test in HD, Challenge, ...)
-project_relations(#project_id, #user_id, role)
-project_details(#project_id, description, starte_date, end_date, state, last_update, website_url, ...)
+project_relations(#project_id, #user_id, #problem_id, role)
+project_details(#project_id, description, starte_date, end_date, state, last_update, location, website_url, ...)
 
 problems(problem_id, #user_id, title, description, ...)
