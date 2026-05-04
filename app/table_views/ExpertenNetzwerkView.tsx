@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Phone, MapPin, X } from 'lucide-react';
+import { Mail, Phone, MapPin, X, Plus } from 'lucide-react';
 
 interface Expert {
   id: number;
@@ -14,7 +14,7 @@ interface Expert {
   location: string;
 }
 
-const experts: Expert[] = [
+const initialExperts: Expert[] = [
   {
     id: 1,
     name: 'Dr. h.c. Max Muster',
@@ -57,16 +57,69 @@ const experts: Expert[] = [
 ];
 
 // Extract unique categories
-const uniqueLocations = Array.from(new Set(experts.map((e) => e.location))).sort();
+const uniqueLocations = Array.from(new Set(initialExperts.map((e) => e.location))).sort();
 const uniqueScientificAreas = Array.from(
-  new Set(experts.flatMap((e) => e.scientificAreas))
+  new Set(initialExperts.flatMap((e) => e.scientificAreas))
 ).sort();
-const uniqueInstitutes = Array.from(new Set(experts.map((e) => e.institute))).sort();
+const uniqueInstitutes = Array.from(new Set(initialExperts.map((e) => e.institute))).sort();
 
 export default function ExpertenNetzwerkView() {
+  const [experts, setExperts] = useState<Expert[]>(initialExperts);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const [selectedInstitutes, setSelectedInstitutes] = useState<string[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    title: '',
+    institute: '',
+    scientificAreas: '' as string | string[],
+    email: '',
+    phone: '',
+    location: '',
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.location) {
+      alert('Bitte füllen Sie mindestens Name, E-Mail und Standort aus.');
+      return;
+    }
+
+    const newExpert: Expert = {
+      id: Math.max(...experts.map((e) => e.id), 0) + 1,
+      name: formData.name,
+      title: formData.title,
+      institute: formData.institute,
+      scientificAreas: typeof formData.scientificAreas === 'string' 
+        ? formData.scientificAreas.split(',').map((a) => a.trim()).filter(Boolean)
+        : formData.scientificAreas,
+      email: formData.email,
+      phone: formData.phone || undefined,
+      location: formData.location,
+    };
+
+    setExperts([...experts, newExpert]);
+    setFormData({
+      name: '',
+      title: '',
+      institute: '',
+      scientificAreas: '',
+      email: '',
+      phone: '',
+      location: '',
+    });
+    setShowForm(false);
+  };
 
   const toggleFilter = (
     value: string,
@@ -98,11 +151,158 @@ export default function ExpertenNetzwerkView() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Experten-Netzwerk</h1>
-        <p className="text-slate-500">
-          Verzeichnis von Fachexperten und Forschern aus verschiedenen Institutionen.
-        </p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-2xl font-bold">Experten-Netzwerk</h1>
+            <p className="text-slate-500">
+              Verzeichnis von Expert*innen aus verschiedenen Fachbereichen in der Forschung und Wirtschaft. Zur Suche nach Personen nutzen Sie die Filterfunktionen oder das oben dargestellte Suchfeld.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm whitespace-nowrap"
+          >
+            <Plus size={18} /> Expert*innen hinzufügen
+          </button>
+        </div>
       </div>
+
+      {/* ADD EXPERT MODAL */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-slate-200 flex justify-between items-center sticky top-0 bg-white">
+              <h2 className="text-2xl font-bold">Neuen Expert hinzufügen</h2>
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-slate-400 hover:text-slate-600 transition"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="z.B. Dr. h.c. Max Muster"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Titel
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    placeholder="z.B. Professor für Urbane Akustik"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Institution
+                  </label>
+                  <input
+                    type="text"
+                    name="institute"
+                    value={formData.institute}
+                    onChange={handleInputChange}
+                    placeholder="z.B. Universität Heidelberg"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Standort *
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    placeholder="z.B. Heidelberg"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    E-Mail *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="z.B. max.muster@uni-heidelberg.de"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Telefon
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="z.B. +49 6221 12345"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Fachbereiche (komma-getrennt)
+                </label>
+                <textarea
+                  name="scientificAreas"
+                  value={formData.scientificAreas}
+                  onChange={handleInputChange}
+                  placeholder="z.B. Akustik, Stadtplanung, Umweltschutz"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="flex-1 px-4 py-2 text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50 transition font-medium"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+                >
+                  Expert hinzufügen
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* FILTERS */}
       <div className="mb-8 space-y-4">

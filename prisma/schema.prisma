@@ -1,17 +1,81 @@
-// 1. Konfiguration des Generators (erzeugt den TypeScript Client)
+//Konfiguration des Generators (erzeugt den TypeScript Client)
 generator client {
   provider = "prisma-client-js"
 }
 
-// 2. Datenbank-Verbindung
+//Datenbank-Verbindung
 datasource db {
   provider = "postgresql"
 }
 
-// 3. Datenmodelle (Tabellen)
-model Todo {
-  id        Int      @id @default(autoincrement())
-  title     String
-  completed Boolean  @default(false)
-  createdAt DateTime @default(now())
+//Expert Stammdaten
+model Expert {
+  expert_id     Int                @id @default(autoincrement())
+  name          String
+  prename       String
+  title         String?
+  email         String?            @unique
+  description   String?
+  location      String?
+  network       String?
+  last_contact  DateTime           @default(now())
+
+  //relationen
+  organization_ id Int             @relation(fields: [organization_id], references: [organization_id])
+ 
+}
+
+//Beschäftigung & Organisationen
+model Organization {
+  organization_id Int       @id @default(autoincrement())
+  name          String
+  location      String?
+  field         String?
+  description   String?
+  
+}
+
+model ExpertField {
+  expert_id   Int
+  field       String
+  description String?
+
+}
+
+model ExpertConnection {
+  expertId    Int     @id
+  economic    Boolean @default(false)
+  science     Boolean @default(false)
+  social      Boolean @default(false)
+}
+
+model Project {
+  id          Int               @id @default(autoincrement())
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  state       String?   // z.B. "Sandbox", "Challenge"
+  lastUpdate  DateTime  @updatedAt
+  location    String?
+  websiteUrl  String?
+  details     ProjectDetail?    // 1:1 Beziehung zu den Details
+  relations   ProjectRelation[]
+}
+
+model ProjectRelation {
+  projectId Int
+  expertId  Int
+  problemId Int?
+
+  @@id([projectId, expertId])
+}
+
+//TODO
+model Problem {
+  id          Int               @id @default(autoincrement())
+  expertId    Int               // Der Ersteller/Besitzer
+  title       String
+  description String?
+
 }

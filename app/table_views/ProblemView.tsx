@@ -1,6 +1,6 @@
 import { AlertCircle } from 'lucide-react';
 
-export default function ProblemDatabaseView() {
+export default function ProblemView() {
   return (
     <>
       <div className="mb-8">
