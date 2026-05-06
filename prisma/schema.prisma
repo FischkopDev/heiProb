@@ -3,12 +3,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
-//Datenbank-Verbindung
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-//Expert Stammdaten
+//Expert*innen
 model Expert {
   expert_id     Int                @id @default(autoincrement())
   name          String
@@ -20,9 +20,7 @@ model Expert {
   network       String?
   last_contact  DateTime           @default(now())
 
-  //relationen
-  organization_ id Int             @relation(fields: [organization_id], references: [organization_id])
- 
+  primary_organization Int?
 }
 
 //Beschäftigung & Organisationen
@@ -36,17 +34,13 @@ model Organization {
 }
 
 model ExpertField {
-  expert_id   Int
+  expert_id   Int           @id @default(autoincrement())
   field       String
   description String?
-
-}
-
-model ExpertConnection {
-  expertId    Int     @id
   economic    Boolean @default(false)
   science     Boolean @default(false)
   social      Boolean @default(false)
+
 }
 
 model Project {
@@ -59,8 +53,7 @@ model Project {
   lastUpdate  DateTime  @updatedAt
   location    String?
   websiteUrl  String?
-  details     ProjectDetail?    // 1:1 Beziehung zu den Details
-  relations   ProjectRelation[]
+  details     String?    // 1:1 Beziehung zu den Details
 }
 
 model ProjectRelation {
