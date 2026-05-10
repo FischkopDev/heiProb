@@ -146,7 +146,7 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
       <div className="mb-8">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold">Experten-Netzwerk</h1>
+            <h1 className="text-2xl font-bold text-black">Experten-Netzwerk</h1>
             <p className="text-slate-500">
               Verzeichnis von Expert*innen aus verschiedenen Fachbereichen in der Forschung und Wirtschaft. Zur Suche nach Personen nutzen Sie die Filterfunktionen oder das oben dargestellte Suchfeld.
             </p>
