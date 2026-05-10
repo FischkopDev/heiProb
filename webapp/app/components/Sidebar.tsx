@@ -11,7 +11,7 @@ export function Sidebar() {
   const navItems = [
     { name: "Problem-Datenbank", href: "/challenge", icon: AlertCircle, id: "database" },
     { name: "Sandbox-Projekte", href: "/sandbox", icon: Briefcase, id: "sandbox" },
-    { name: "Experten-Netzwerk", href: "/experten", icon: Users, id: "experten" },
+    { name: "Experten-Netzwerk", href: "/relations", icon: Users, id: "experten" },
   ];
 
   return (
