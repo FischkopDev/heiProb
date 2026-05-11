@@ -1,8 +1,23 @@
 import { NextResponse } from "next/server";
 import pool from "../../../../lib/db";
 
-async function getOrganization(request: Request) {
-    return 0; //TODO 
+async function addOrganization(name: string, location: string, field: string, description: string) {
+     console.log("Adding new organization to database");
+
+  try {
+    
+    const result = await pool.query(
+      `INSERT INTO "Organization" (name, description, field, location)
+       VALUES ($1, $2, $3, $4) RETURNING organization_id`,
+      ["test","test","test","test"]
+    );
+    const id = result.rows[0].organization_id;
+    return id;
+  }
+  catch(error){
+    console.error("Error creating organization:", error);
+  }
+  return 0;
 }
 
 export async function POST(request: Request) {
@@ -23,11 +38,12 @@ export async function POST(request: Request) {
   }
 
   try {
+    const organizationId = await addOrganization("Default Organization", "Unknown Location", "General", "Default organization for new experts");
     
     const result = await pool.query(
-      `INSERT INTO Experts (name, prename, title, email, description, location, network, primary_organization_id)
+      `INSERT INTO "Expert" (name, prename, title, email, description, location, network, primary_organization_id)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [name, prename, title || null, email || null, description || null, location || null, network || null, getOrganization(request)]
+      [name, prename, title || null, email || null, description || null, location || null, network || null, organizationId]
     );
 
     return NextResponse.json({

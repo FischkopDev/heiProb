@@ -9,7 +9,9 @@ export async function POST() {
     // Direktes SQL-Query
     const result = await pool.query('SELECT * FROM "Test"');
     
-    return NextResponse.json(result.rows);
+    return NextResponse.json({
+      success: true
+    });
   } catch (errorMsg) {
     console.error(errorMsg);
     return NextResponse.json({ error: errorMsg }, { status: 500 });
