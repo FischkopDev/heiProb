@@ -14,6 +14,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Plus, X } from 'lucide-react';
 import { Expert, initialExperts } from './Person';
+import { useRouter } from "next/navigation";
 
 /**
  * @interface ExpertenNetzwerkViewProps
@@ -75,6 +76,7 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
   const [selectedOrganizations, setSelectedOrganizations] = useState<string[]>([]);
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const [selectedFields, setSelectedFields] = useState<string[]>([]);
+  const router = useRouter();
   ///@}
 
   /**
@@ -152,7 +154,7 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
             </p>
           </div>
           <button
-            onClick={onAddExpert}
+             onClick={() => router.push("/relations/add")}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm whitespace-nowrap"
           >
             <Plus size={18} /> Expert*innen hinzufügen

@@ -6,7 +6,7 @@ import { Search, Plus } from "lucide-react";
 export function Topbar() {
 const createUser = async () => {
     try {
-      const response = await fetch('api/users/', {
+      const response = await fetch('api/test', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
