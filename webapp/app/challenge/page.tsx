@@ -57,7 +57,7 @@ export default function ProblemView() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Problem-Datenbank</h1>
+        <h1 className="text-2xl font-bold text-black">Problem-Datenbank</h1>
         <p className="text-slate-500">
           Liste offener Herausforderungen. Weitere Informationen zu den Problemen sind nach Auswahl des jeweiligen Eintrags verfügbar.
         </p>

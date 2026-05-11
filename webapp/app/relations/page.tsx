@@ -11,9 +11,9 @@
   * @author Timo Skrobanek
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Plus, X } from 'lucide-react';
-import { Expert, initialExperts } from './Person';
+import { Expert, initialExperts, getUserFromDB } from './Person';
 import { useRouter } from "next/navigation";
 
 /**
@@ -32,7 +32,25 @@ interface ExpertenNetzwerkViewProps {
 }
 
 export default function RelationsPage() {
+ // 1. Initialisiere den State mit deinen statischen Daten (initialExperts)
   const [experts, setExperts] = useState<Expert[]>(initialExperts);
+
+  //TODO request for fetching experts from the database and updating the state accordingly.
+  useEffect(() => {
+    // 2. Erstelle eine asynchrone Funktion innerhalb des Effects
+    const loadData = async () => {
+      try {
+        const data = await getUserFromDB();
+        setExperts(Array.isArray(data) ? data : initialExperts);
+      } catch (error) {
+        console.error("Fehler beim Laden der Experten:", error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+
 
   const handleAddExpert = () => {
     console.log('Add expert action triggered');
@@ -166,6 +184,7 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
       <div className="mb-8 space-y-4">
         {/* Organizations */}
         <div className="bg-white rounded-xl border border-slate-200 p-4">
+        
           <h3 className="text-sm font-bold text-slate-900 mb-3">Organisation</h3>
           <div className="flex flex-wrap gap-2">
             {uniqueOrganizations.map((org) => (
@@ -267,38 +286,18 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
                   <MapPin size={16} className="text-slate-400" />
                   <span className="font-medium">{expert.primary_organization}</span>
                 </div>
-                {expert.other_organizations.length > 0 && (
-                  <p className="text-xs text-slate-500 ml-6">
-                    Weitere: {expert.other_organizations.join(', ')}
-                  </p>
-                )}
               </div>
 
               <div className="mb-4">
                 <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Fachbereiche</p>
                 <div className="flex flex-wrap gap-2">
-                  {expert.scientificAreas.map((area) => (
-                    <span
-                      key={area}
-                      className="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-medium"
-                    >
-                      {area}
-                    </span>
-                  ))}
                 </div>
               </div>
 
               <div className="mb-4">
                 <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Expertise</p>
                 <div className="flex flex-wrap gap-2">
-                  {expert.expert_fields.map((field) => (
-                    <span
-                      key={field}
-                      className="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium"
-                    >
-                      {field}
-                    </span>
-                  ))}
+                  
                 </div>
               </div>
 

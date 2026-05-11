@@ -28,7 +28,6 @@ model Expert {
   
   // 2. Added back-relations (required for Prisma relations to work)
   expertFields            ExpertField[]
-  problems                Problem[]
   projects                ProjectRelation[]
 }
 
@@ -77,10 +76,11 @@ model ProjectRelation {
 
 model Problem {
   problem_id      Int               @id @default(autoincrement())
-  expert_id       Int
-  expert          Expert            @relation(fields: [expert_id], references: [expert_id])
   title           String
   description     String?
+  category        String?
+  state           String?
+
   projectRelations ProjectRelation[]
 }
 

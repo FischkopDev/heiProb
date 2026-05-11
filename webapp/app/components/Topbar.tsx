@@ -2,8 +2,10 @@
 "use client";
 
 import { Search, Plus } from "lucide-react";
+import { useRouter } from 'next/navigation';
 
 export function Topbar() {
+  const router = useRouter();
 const createUser = async () => {
     try {
       const response = await fetch('api/test', {
@@ -36,7 +38,7 @@ const createUser = async () => {
       {/* ACTIONS */}
       <div className="flex items-center gap-4">
         <button 
-          onClick={() => createUser()}
+          onClick={() => router.push("/challenge/add")}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
         >
           <Plus size={18} /> Neues Problem melden

@@ -35,6 +35,33 @@ export interface ExpertFormData {
   social: boolean;
 }
 
+ export const getUserFromDB : () => Promise<Expert[]> = async () => {
+    try {
+      const response = await fetch('/api/users/list', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.error || 'Failed to read users');
+      }
+
+      if (Array.isArray(result.experts)) {
+        return result.experts;
+      }
+
+      console.warn('Unexpected API payload, returning empty expert list:', result);
+      return [];
+    } catch (error) {
+      console.error('Error reading user:', error);
+      throw error;
+    };
+  };
+
 //Sample Data to populate the expert network with initial entries, demonstrating the structure and content of the Expert interface
 export const initialExperts: Expert[] = [
   {

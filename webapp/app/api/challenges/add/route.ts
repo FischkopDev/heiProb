@@ -1,0 +1,57 @@
+"use server";
+
+import  pool  from "../../../../lib/db";
+import { NextResponse } from "next/server";
+
+async function addChallenge(body: any){
+   const { title, category, status, summary} = body;
+  try {
+    const result = await pool.query(
+      `INSERT INTO "Problem" (title, category, status, summary)
+       VALUES ($1, $2, $3, $4) RETURNING problem_id`,
+       [title, category, status, summary]
+    );
+    const id = result.rows[0].problem_id;
+    return id;
+  }
+  catch(error){
+    console.error("Error creating problem:", error);
+  }
+  return 0;
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { title, category, status, summary} = body;
+  
+  console.log("Adding new challenge to database");
+
+  // Validate required fields
+  if (!title || !category || !status) {
+    return NextResponse.json(
+      {
+        error: "Missing required fields",
+        required: ["title", "category", "status"],
+      },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const result = await addChallenge(body); 
+
+    return NextResponse.json({
+      success: true
+    });
+  } catch (error: any) {
+    console.error("Error adding challenge:", error);
+
+    return NextResponse.json(
+      {
+        error: "Failed to add challenge",
+        details: error.message,
+      },
+      { status: 500 }
+    );
+  }
+}
