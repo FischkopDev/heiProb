@@ -8,17 +8,28 @@ datasource db {
   provider = "postgresql"
 }
 
+
 model Expert {
   expert_id               Int               @id @default(autoincrement())
   name                    String
   prename                 String
   title                   String?
-  email                   String?           
+  email                   String?
   description             String?
   location                String?
-  network                 String?
-  last_contact            DateTime          @default(now())
-  primary_organization_id Int               @relation(fields: [primary_organization_id], references: [organization_id])
+  last_contact            DateTime      @default(now())
+  economic                Boolean       @default(false)
+  science                 Boolean       @default(false)
+  social                  Boolean       @default(false)
+  
+  // 1. Fixed: Scalar field + Relation field
+  primary_organization_id Int
+  organization            Organization      @relation(fields: [primary_organization_id], references: [organization_id])
+  
+  // 2. Added back-relations (required for Prisma relations to work)
+  expertFields            ExpertField[]
+  problems                Problem[]
+  projects                ProjectRelation[]
 }
 
 model Organization {
@@ -27,16 +38,14 @@ model Organization {
   location        String?
   field           String?
   description     String?
+  experts         Expert[]
 }
 
 model ExpertField {
   id          Int     @id @default(autoincrement())
-  expert_id   Int     @relation(fields: [expertId], references: [expert_id])
+  expert_id   Int
+  expert      Expert  @relation(fields: [expert_id], references: [expert_id])
   field       String
-  description String?
-  economic    Boolean @default(false)
-  science     Boolean @default(false)
-  social      Boolean @default(false)
 }
 
 model Project {
@@ -46,26 +55,33 @@ model Project {
   startDate   DateTime?
   endDate     DateTime?
   state       String?
-  lastUpdate  DateTime          @updatedAt
+  lastUpdate  DateTime          @default(now())
   location    String?
   websiteUrl  String?
   details     String?
-  relations   ProjectRelation   
+  experts     ProjectRelation[]
 }
 
 model ProjectRelation {
-  expert_id    Expert   @relation(fields: [expertId], references: [expert_id])
-  problem_id   Problem? @relation(fields: [problemId], references: [id])
-  project_id   Project  @relation(fields: [projectId], references: [id])
+  // 3. Fixed: Scalar IDs for the composite primary key
+  expert_id  Int
+  problem_id Int?
+  project_id Int
+
+  expert  Expert   @relation(fields: [expert_id], references: [expert_id])
+  problem Problem? @relation(fields: [problem_id], references: [problem_id])
+  project Project  @relation(fields: [project_id], references: [id]) // Note: Project model uses 'id', not 'project_id'
 
   @@id([project_id, expert_id])
 }
 
 model Problem {
-  problem_id       Int               @id @default(autoincrement())
-  expert_id        Int               @relation(fields: [expert_id], references: [expert_id])
-  title            String
-  description      String?
+  problem_id      Int               @id @default(autoincrement())
+  expert_id       Int
+  expert          Expert            @relation(fields: [expert_id], references: [expert_id])
+  title           String
+  description     String?
+  projectRelations ProjectRelation[]
 }
 
 model Test {

@@ -32,14 +32,53 @@ test("AddOrganization and GetOrganization",async () => {
 
 })
 
-test("AddExpert", async () => {
-    const name = "Test Expert";
-    const prename = "Test Prename";
-    const title = "Test Title";
-    const email = "Test Email";
-    const description = "Test Description";
-    const primary_organization = "Test Organization";
-    const location = "Test Location";
-    const network = "Test Network";
-    const result = await addExpert(name, prename, title, email, description, primary_organization, location, network);
-})
+test("AddExpert and Verify in Database", async () => {
+    // 1. Testdaten definieren
+    const expertData = {
+        name: "Mustermann",
+        prename: "Max",
+        title: "Dr.",
+        email: "max.mustermann@test.com",
+        description: "KI Spezialist",
+        primary_organization: "Test Uni", // Diese Org wird ggf. erstellt
+        location: "Heidelberg",
+        economic: true,
+        science: true,
+        social: false
+    };
+
+    // 2. Funktion ausführen
+    // Hinweis: Die Funktion gibt das Result-Objekt von pool.query zurück
+    const result = await addExpert(expertData);
+    
+    // Wir holen uns die ID des gerade erstellten Experten
+    // Falls deine Funktion das result von pool.query zurückgibt, 
+    // müssen wir sicherstellen, dass wir die ID für den Cleanup haben.
+    const selectResult = await pool.query(
+        `SELECT * FROM "Expert" WHERE email = $1 AND name = $2`,
+        [expertData.email, expertData.name]
+    );
+
+    // 3. Verifikation
+    if (selectResult.rows.length > 0) {
+        const dbExpert = selectResult.rows[0];
+        const expertId = dbExpert.expert_id;
+        const orgId = dbExpert.primary_organization_id;
+
+        expect(dbExpert.name).toBe(expertData.name);
+        expect(dbExpert.prename).toBe(expertData.prename);
+        expect(dbExpert.email).toBe(expertData.email);
+        expect(dbExpert.location).toBe(expertData.location);
+        
+        // Booleans prüfen
+        expect(dbExpert.economic).toBe(expertData.economic);
+        expect(dbExpert.science).toBe(expertData.science);
+        expect(dbExpert.social).toBe(expertData.social);
+
+        // 4. Cleanup (Wichtig: Erst Experte, dann ggf. die Organisation löschen)
+        await pool.query(`DELETE FROM "Expert" WHERE expert_id = $1`, [expertId]);
+        
+    } else {
+        fail("User was not added to the database");
+    }
+});

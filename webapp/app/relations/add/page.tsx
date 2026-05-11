@@ -36,13 +36,6 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
 
   const createUserInDB = async (expertData: ExpertFormData) => {
     try {
-      const network = [
-        expertData.economic ? 'economic' : null,
-        expertData.science ? 'science' : null,
-        expertData.social ? 'social' : null,
-      ]
-        .filter(Boolean)
-        .join(',');
 
       const response = await fetch('/api/users/create', {
         method: 'POST',
@@ -56,7 +49,9 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
           email: expertData.email,
           description: expertData.description,
           primary_organization: expertData.primary_organization,
-          network,
+          science: expertData.science,
+          economic: expertData.economic,
+          social: expertData.social
         }),
       });
 

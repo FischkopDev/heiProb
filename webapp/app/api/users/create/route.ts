@@ -41,7 +41,8 @@ export async function getOrganizationIdByName(name: string): Promise<number | nu
   }
 }
 
-export async function addExpert(name: string, prename: string, title: string, email: string, description: string, primary_organization: string, location: string, network: string) {
+export async function addExpert(body : any) {
+  const { name, prename, title, email, description, primary_organization, location, economic, science, social} = body;
   console.log("Adding new expert to database");
 
   //Check if organization exists
@@ -49,12 +50,12 @@ export async function addExpert(name: string, prename: string, title: string, em
   if(organizationId === null){
     organizationId = await addOrganization(primary_organization, location, "", "");
   }
-    
+
   //Add expert to database
   const result = await pool.query(
-      `INSERT INTO "Expert" (name, prename, title, email, description, location, network, primary_organization_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [name, prename, title || null, email || null, description || null, location || null, network || null, 1]
+      `INSERT INTO "Expert" (name, prename, title, email, description, location, economic, science, social, primary_organization_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      [name, prename, title || null, email || null, description || null, location || null, economic || false, science || false, social || false, 1]
     );
   return result;
 }
@@ -64,7 +65,7 @@ export async function addExpert(name: string, prename: string, title: string, em
 export async function POST(request: Request) {
   const body = await request.json();
   const { name, prename, title, email, description, primary_organization, location, network} = body;
-
+  
   console.log("Adding new person to database");
 
   // Validate required fields
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await addExpert(name, prename, title, email, description, primary_organization, location, network); 
+    const result = await addExpert(body); 
 
     return NextResponse.json({
       success: true
