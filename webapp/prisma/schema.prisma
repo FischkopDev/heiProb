@@ -13,16 +13,12 @@ model Expert {
   name                    String
   prename                 String
   title                   String?
-  email                   String?           @unique
+  email                   String?           
   description             String?
   location                String?
   network                 String?
   last_contact            DateTime          @default(now())
-  primary_organization_id Int
-  primary_organization    Organization      @relation(fields: [primary_organization_id], references: [organization_id])
-  expert_fields           ExpertField[]
-  problems                Problem[]
-  projectRelations        ProjectRelation[]
+  primary_organization_id Int               @relation(fields: [primary_organization_id], references: [organization_id])
 }
 
 model Organization {
@@ -31,18 +27,16 @@ model Organization {
   location        String?
   field           String?
   description     String?
-  experts         Expert[]
 }
 
 model ExpertField {
   id          Int     @id @default(autoincrement())
-  expert_id   Int
+  expert_id   Int     @relation(fields: [expertId], references: [expert_id])
   field       String
   description String?
   economic    Boolean @default(false)
   science     Boolean @default(false)
   social      Boolean @default(false)
-  expert      Expert  @relation(fields: [expert_id], references: [expert_id])
 }
 
 model Project {
@@ -56,27 +50,22 @@ model Project {
   location    String?
   websiteUrl  String?
   details     String?
-  relations   ProjectRelation[]
+  relations   ProjectRelation   
 }
 
 model ProjectRelation {
-  projectId Int
-  expertId  Int
-  problemId Int?
-  expert    Expert   @relation(fields: [expertId], references: [expert_id])
-  problem   Problem? @relation(fields: [problemId], references: [id])
-  project   Project  @relation(fields: [projectId], references: [id])
+  expert_id    Expert   @relation(fields: [expertId], references: [expert_id])
+  problem_id   Problem? @relation(fields: [problemId], references: [id])
+  project_id   Project  @relation(fields: [projectId], references: [id])
 
-  @@id([projectId, expertId])
+  @@id([project_id, expert_id])
 }
 
 model Problem {
-  id               Int               @id @default(autoincrement())
-  expertId         Int
+  problem_id       Int               @id @default(autoincrement())
+  expert_id        Int               @relation(fields: [expert_id], references: [expert_id])
   title            String
   description      String?
-  expert           Expert            @relation(fields: [expertId], references: [expert_id])
-  projectRelations ProjectRelation[]
 }
 
 model Test {

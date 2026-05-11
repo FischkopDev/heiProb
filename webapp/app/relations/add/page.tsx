@@ -55,7 +55,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
           title: expertData.title,
           email: expertData.email,
           description: expertData.description,
-          location: expertData.primary_organization,
+          primary_organization: expertData.primary_organization,
           network,
         }),
       });
@@ -104,7 +104,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
         >
           <ArrowLeft size={20} /> Zurück zum Experten-Netzwerk
         </button>
-        <h1 className="text-2xl font-bold">Expert*in hinzufügen</h1>
+        <h1 className="text-2xl font-bold text-black">Expert*in hinzufügen</h1>
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
@@ -239,7 +239,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">Netzwerk-Verbindungen</label>
             <div className="space-y-2">
-              <label className="flex items-center">
+              <label className="flex items-center text-black">
                 <input
                   type="checkbox"
                   name="economic"
@@ -249,7 +249,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
                 />
                 Wirtschaft
               </label>
-              <label className="flex items-center">
+              <label className="flex items-center text-black">
                 <input
                   type="checkbox"
                   name="science"
@@ -259,7 +259,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
                 />
                 Wissenschaft
               </label>
-              <label className="flex items-center">
+              <label className="flex items-center text-black">
                 <input
                   type="checkbox"
                   name="social"
