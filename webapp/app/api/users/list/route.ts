@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import pool from "../../../../lib/db";
 
-async function getListOfPeopleWithOrganization() {
+export async function getListOfPeopleWithOrganization() {
   const result = await pool.query(
     `SELECT
        e.*,

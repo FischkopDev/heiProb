@@ -9,7 +9,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Problem-Datenbank", href: "/challenge", icon: AlertCircle, id: "database" },
+    { name: "Challenges", href: "/challenge", icon: AlertCircle, id: "database" },
     { name: "Sandbox-Projekte", href: "/sandbox", icon: Briefcase, id: "sandbox" },
     { name: "Experten-Netzwerk", href: "/relations", icon: Users, id: "experten" },
   ];

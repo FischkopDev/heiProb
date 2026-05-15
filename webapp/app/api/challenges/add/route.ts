@@ -7,7 +7,7 @@ async function addChallenge(body: any){
    const { title, category, status, summary} = body;
   try {
     const result = await pool.query(
-      `INSERT INTO "Problem" (title, category, status, summary)
+      `INSERT INTO "Problem" (title, category, state, description)
        VALUES ($1, $2, $3, $4) RETURNING problem_id`,
        [title, category, status, summary]
     );
@@ -22,16 +22,16 @@ async function addChallenge(body: any){
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { title, category, status, summary} = body;
+  const { title, category, state, description} = body;
   
   console.log("Adding new challenge to database");
 
   // Validate required fields
-  if (!title || !category || !status) {
+  if (!title || !category || !state) {
     return NextResponse.json(
       {
         error: "Missing required fields",
-        required: ["title", "category", "status"],
+        required: ["title", "category", "state"],
       },
       { status: 400 }
     );
@@ -41,7 +41,8 @@ export async function POST(request: Request) {
     const result = await addChallenge(body); 
 
     return NextResponse.json({
-      success: true
+      success: true,
+      status: 200
     });
   } catch (error: any) {
     console.error("Error adding challenge:", error);

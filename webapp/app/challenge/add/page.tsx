@@ -58,7 +58,7 @@ export default function AddChallengePage() {
       <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
         <div className="grid gap-6 lg:grid-cols-2">
           <label className="block">
-            <span className="text-sm font-semibold text-slate-700">Titel</span>
+            <span className="text-sm font-semibold text-slate-700">Titel*</span>
             <input
               type="text"
               value={formState.title}
@@ -69,7 +69,7 @@ export default function AddChallengePage() {
           </label>
 
           <label className="block">
-            <span className="text-sm font-semibold text-slate-700">Kategorie</span>
+            <span className="text-sm font-semibold text-slate-700">Kategorie*</span>
             <input
               type="text"
               value={formState.category}
