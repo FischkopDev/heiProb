@@ -47,15 +47,16 @@ export async function addExpert(body : any) {
 
   //Check if organization exists
   let organizationId = await getOrganizationIdByName(primary_organization);
-  if(organizationId === null){
+  if(organizationId == null){
     organizationId = await addOrganization(primary_organization, location, "", "");
   }
+
 
   //Add expert to database
   const result = await pool.query(
       `INSERT INTO "Expert" (name, prename, title, email, description, location, economic, science, social, primary_organization_id)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-      [name, prename, title || null, email || null, description || null, location || null, economic || false, science || false, social || false, 1]
+      [name, prename, title || null, email || null, description || null, location || null, economic || false, science || false, social || false, organizationId]
     );
   return result;
 }
@@ -69,7 +70,7 @@ export async function POST(request: Request) {
   console.log("Adding new person to database");
 
   // Validate required fields
-  if (!name || !prename || !email || !primary_organization) {
+  if (!name || !prename || !email) {
     return NextResponse.json(
       {
         error: "Missing required fields",

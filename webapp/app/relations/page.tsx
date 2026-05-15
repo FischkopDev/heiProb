@@ -101,7 +101,9 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
    * @brief Extracts unique primary organizations from the expert list.
    * @note The resulting array is sorted alphabetically.
    */
-  const uniqueOrganizations = Array.from(new Set(experts.map((e) => e.primary_organization))).sort();
+  const uniqueOrganizations = Array.from(
+    new Set(experts.map((e) => e.organization?.name || e.primary_organization))
+  ).sort();
 
   /**
    * @brief Extracts unique scientific areas by flattening the expert data.
@@ -143,8 +145,9 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
    * for multiple selections within the same category.
    */
   const filteredExperts = experts.filter((expert) => {
+    const expertOrgName = expert.organization?.name || expert.primary_organization;
     const matchesOrganization =
-      selectedOrganizations.length === 0 || selectedOrganizations.includes(expert.primary_organization);
+      selectedOrganizations.length === 0 || selectedOrganizations.includes(expertOrgName);
     const matchesArea =
       selectedAreas.length === 0 ||
       expert.scientificAreas.some((area) => selectedAreas.includes(area));
@@ -282,9 +285,25 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
               </div>
 
               <div className="mb-4 pb-4 border-b border-slate-100">
-                <div className="flex items-center gap-2 text-sm text-slate-700 mb-2">
-                  <MapPin size={16} className="text-slate-400" />
-                  <span className="font-medium">{expert.primary_organization}</span>
+                <div className="flex flex-col gap-2 text-sm text-slate-700 mb-2">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={16} className="text-slate-400" />
+                    <span className="font-medium">
+                      {expert.organization?.name || expert.primary_organization}
+                    </span>
+                  </div>
+                  {(expert.organization?.location || expert.organization?.field) && (
+                    <div className="text-slate-500">
+                      {[expert.organization?.location, expert.organization?.field]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </div>
+                  )}
+                  {expert.organization?.description && (
+                    <div className="text-slate-500 text-xs">
+                      {expert.organization.description}
+                    </div>
+                  )}
                 </div>
               </div>
 

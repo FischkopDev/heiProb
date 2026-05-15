@@ -1,5 +1,13 @@
 'use client';
 
+export interface Organization {
+  organization_id: number;
+  name: string;
+  location?: string;
+  field?: string;
+  description?: string;
+}
+
 //Interface to represent the structure of an expert in the system, including all relevant fields and types
 export interface Expert {
   expert_id: number;
@@ -17,6 +25,7 @@ export interface Expert {
   economic: boolean;
   science: boolean;
   social: boolean;
+  organization?: Organization;
 }
 
 export interface ExpertFormData {
@@ -51,7 +60,14 @@ export interface ExpertFormData {
       }
 
       if (Array.isArray(result.experts)) {
-        return result.experts;
+        return result.experts.map((expert: any) => ({
+          ...expert,
+          primary_organization: expert.organization?.name || expert.primary_organization || '',
+          other_organizations: Array.isArray(expert.other_organizations) ? expert.other_organizations : [],
+          scientificAreas: Array.isArray(expert.scientificAreas) ? expert.scientificAreas : [],
+          expert_fields: Array.isArray(expert.expert_fields) ? expert.expert_fields : [],
+          organization: expert.organization,
+        }));
       }
 
       console.warn('Unexpected API payload, returning empty expert list:', result);
