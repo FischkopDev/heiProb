@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 
 export function Topbar() {
   const router = useRouter();
-const createUser = async () => {
+  
+  const createUser = async () => {
     try {
       const response = await fetch('api/test', {
         method: 'POST',
@@ -35,13 +36,20 @@ const createUser = async () => {
         />
       </div>
 
-      {/* ACTIONS */}
-      <div className="flex items-center gap-4">
+      {/* ACTIONS (Beide Buttons in einem gemeinsamen Flex-Container) */}
+      <div className="flex items-center gap-3">
         <button 
           onClick={() => router.push("/challenge/add")}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm text-sm"
         >
           <Plus size={18} /> Neues Problem melden
+        </button>
+
+        <button 
+          onClick={() => router.push("/project/add")} 
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm text-sm"
+        >
+          <Plus size={18} /> Neues Projekt hinzufügen
         </button>
       </div>
     </header>

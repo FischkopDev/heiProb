@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { AlertCircle, X } from 'lucide-react';
+import { useState, useEffect } from 'react'; // 1. useEffect importieren
+import { AlertCircle, X, Loader2, Plus } from 'lucide-react'; // Loader-Icon für besseres UX hinzugefügt
+import { useRouter } from "next/navigation";
 
 interface ProblemItem {
   id: number;
@@ -16,112 +17,139 @@ interface ProblemItem {
   nextSteps: string;
 }
 
-const problems: ProblemItem[] = [
-  {
-    id: 1,
-    title: 'Lärmbelastung Weststadt',
-    tags: 'Urbane Gesundheit • Beteiligung',
-    category: 'Umwelt',
-    status: 'Ungelöst',
-    statusColor: 'amber',
-    summary:
-      'Bewohner*innen in der Weststadt klagen über anhaltende Lärmbelastung durch Baustellen, Verkehr und Freizeiteinrichtungen.',
-    impact:
-      'Erhöhte Stressbelastung, geringere Lebensqualität und mögliche Gesundheitsrisiken für Familien und Kinder.',
-    stakeholders:
-      'Stadtverwaltung, lokale Anwohnervertretung, Verkehrsplaner*innen, Umwelt- und Gesundheitsbehörde.',
-    nextSteps:
-      'Bedarfsanalyse durchführen, Lärmschutzkonzepte prüfen und geeignete Beteiligungsformate für Anwohner*innen anbieten.',
-  },
-  {
-    id: 2,
-    title: 'Digitale Stadtteil-Services',
-    tags: 'Smart City • Bürgerbeteiligung',
-    category: 'Digitalisierung',
-    status: 'In Bearbeitung',
-    statusColor: 'green',
-    summary:
-      'Nicht alle Bewohner*innen profitieren gleichermaßen von digitalen Angeboten im Stadtteil, da Zugänge und Verständnis fehlen.',
-    impact:
-      'Digitale Kluft, schwächere Beteiligung und ineffiziente Nutzung verfügbarer Services.',
-    stakeholders:
-      'Smart-City-Team, lokale Vereine, Seniorenvertretung und Bildungseinrichtungen.',
-    nextSteps:
-      'Nutzerfreundlichkeit evaluieren, Barrieren identifizieren und Pilotprojekte mit niedrigschwelligen Angeboten starten.',
-  },
-];
-
 export default function ProblemView() {
+  // 2. States für dynamische Daten, Ladezustand und Fehlerhandling einrichten
+  const [problems, setProblems] = useState<ProblemItem[]>([]);
   const [selectedProblem, setSelectedProblem] = useState<ProblemItem | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  // 3. Funktion für den GET-Request definieren
+  useEffect(() => {
+    async function fetchProblems() {
+      try {
+        setIsLoading(true);
+        // Pfad an deine tatsächliche API-Route anpassen (z.B. /api/challenges/list)
+        const response = await fetch('/api/challenges/list');
+        
+        if (!response.ok) {
+          throw new Error('Fehler beim Laden der Problem-Datenbank');
+        }
+
+        const data = await response.json();
+        
+        // (z.B. wenn die DB "description" liefert, deine UI aber "summary" erwartet)
+        if (data.success && Array.isArray(data.challenges)) {
+          setProblems(data.challenges);
+        } else {
+          throw new Error('Unerwartetes Datenformat von der API');
+        }
+      } catch (err: any) {
+        setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProblems();
+  }, []);
 
   return (
     <>
+
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-black">Problem-Datenbank</h1>
+        <h1 className="text-2xl font-bold text-black">Challenges in Heidelberg</h1>
         <p className="text-slate-500">
-          Liste offener Herausforderungen. Weitere Informationen zu den Problemen sind nach Auswahl des jeweiligen Eintrags verfügbar.
+          Liste offener Herausforderungen. Weitere Informationen zu den Challenges sind nach Auswahl des jeweiligen Eintrags verfügbar.
         </p>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
-          <h3 className="font-bold">Dokumentierte Probleme</h3>
-          <span className="text-xs text-slate-400">{problems.length} relevante Einträge</span>
+      {/* 4. UI-Zustände (Laden / Fehler) abfangen */}
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-slate-200">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          <p className="mt-2 text-sm text-slate-500">Lade Challenges-Datenbank...</p>
         </div>
-        <table className="w-full text-left border-collapse text-sm">
-          <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold">
-            <tr>
-              <th className="p-4">Problem</th>
-              <th className="p-4">Kategorie</th>
-              <th className="p-4">Status</th>
-              <th className="p-4 text-right">Details</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {problems.map((problem) => (
-              <tr
-                key={problem.id}
-                className="hover:bg-slate-50 transition cursor-pointer"
-                onClick={() => setSelectedProblem(problem)}
-              >
-                <td className="p-4">
-                  <div className="font-bold text-slate-800">{problem.title}</div>
-                  <div className="text-xs text-slate-500">{problem.tags}</div>
-                </td>
-                <td className="p-4">
-                  <span className="text-xs font-medium text-slate-600">{problem.category}</span>
-                </td>
-                <td className="p-4">
-                  <span
-                    className={`text-[10px] px-2 py-1 rounded-full ${
-                      problem.statusColor === 'amber'
-                        ? 'bg-amber-100 text-amber-700'
-                        : problem.statusColor === 'green'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-slate-100 text-slate-700'
-                    }`}
-                  >
-                    {problem.status}
-                  </span>
-                </td>
-                <td className="p-4 text-right">
-                  <button
-                    type="button"
-                    className="text-[10px] font-semibold text-blue-600 hover:underline"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setSelectedProblem(problem);
-                    }}
-                  >
-                    Ansehen
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      )}
 
+      {error && (
+        <div className="flex items-center gap-3 p-4 bg-red-50 text-red-700 rounded-xl border border-red-200 text-sm">
+          <AlertCircle size={18} />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* 5. Tabelle nur rendern, wenn nicht geladen wird und kein Fehler vorliegt */}
+      {!isLoading && !error && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
+            <h3 className="font-bold text-black">Dokumentierte Probleme</h3>
+            <span className="text-xs text-slate-400">{problems.length} relevante Einträge</span>
+          </div>
+          
+          {problems.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 text-sm">
+              Aktuell sind keine Probleme dokumentiert.
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse text-sm">
+              <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold">
+                <tr>
+                  <th className="p-4">Problem</th>
+                  <th className="p-4">Kategorie</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4 text-right">Details</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {problems.map((problem) => (
+                  <tr
+                    key={problem.id}
+                    className="hover:bg-slate-50 transition cursor-pointer"
+                    onClick={() => setSelectedProblem(problem)}
+                  >
+                    <td className="p-4">
+                      <div className="font-bold text-slate-800">{problem.title}</div>
+                      <div className="text-xs text-slate-500">{problem.tags || 'Keine Tags'}</div>
+                    </td>
+                    <td className="p-4">
+                      <span className="text-xs font-medium text-slate-600">{problem.category}</span>
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`text-[10px] px-2 py-1 rounded-full ${
+                          problem.statusColor === 'amber' || problem.status === 'Ungelöst'
+                            ? 'bg-amber-100 text-amber-700'
+                            : problem.statusColor === 'green' || problem.status === 'In Bearbeitung'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-slate-100 text-slate-700'
+                        }`}
+                      >
+                        {problem.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      <button
+                        type="button"
+                        className="text-[10px] font-semibold text-blue-600 hover:underline"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setSelectedProblem(problem);
+                        }}
+                      >
+                        Ansehen
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {/* Modal bleibt identisch wie in deinem Code */}
       {selectedProblem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
           <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full overflow-hidden">

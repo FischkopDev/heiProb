@@ -22,11 +22,9 @@ model Expert {
   science                 Boolean       @default(false)
   social                  Boolean       @default(false)
   
-  // 1. Fixed: Scalar field + Relation field
   primary_organization_id Int
   organization            Organization      @relation(fields: [primary_organization_id], references: [organization_id])
   
-  // 2. Added back-relations (required for Prisma relations to work)
   expertFields            ExpertField[]
   projects                ProjectRelation[]
 }
@@ -62,7 +60,6 @@ model Project {
 }
 
 model ProjectRelation {
-  // 3. Fixed: Scalar IDs for the composite primary key
   expert_id  Int
   problem_id Int?
   project_id Int
@@ -80,6 +77,7 @@ model Problem {
   description     String?
   category        String?
   state           String?
+  reported_by     Int               @relation(fields: [reported_by], references: [expert_id])
 
   projectRelations ProjectRelation[]
 }
