@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { PlusCircle, ArrowLeft, Calendar, FileText, MapPin, Link2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface NewProject {
   title: string;
@@ -15,6 +16,7 @@ interface NewProject {
 }
 
 export default function AddProjectView() {
+  const router = useRouter();
   const [formData, setFormData] = useState<NewProject>({
     title: '',
     description: '',
