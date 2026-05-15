@@ -7,23 +7,6 @@ import { useRouter } from 'next/navigation';
 export function Topbar() {
   const router = useRouter();
   
-  const createUser = async () => {
-    try {
-      const response = await fetch('api/test', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ title: 'Hallo Welt', content: 'hallo.welt@example.com' }),
-      });
-      if (response.ok) {
-        console.log('Test user created successfully');
-      }
-    } catch (error) {
-      console.error('Error creating user:', error);
-    }
-  };
-
   return (
     <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10">
       {/* SEARCH */}
@@ -46,7 +29,7 @@ export function Topbar() {
         </button>
 
         <button 
-          onClick={() => router.push("/project/add")} 
+          onClick={() => router.push("/sandbox/add")} 
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm text-sm"
         >
           <Plus size={18} /> Neues Projekt hinzufügen

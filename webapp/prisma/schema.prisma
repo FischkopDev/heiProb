@@ -54,6 +54,7 @@ model Project {
   state       String?
   lastUpdate  DateTime          @default(now())
   location    String?
+  project_state String?
   websiteUrl  String?
   details     String?
   experts     ProjectRelation[]
