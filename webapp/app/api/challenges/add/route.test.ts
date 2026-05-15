@@ -3,7 +3,7 @@ import pool from "../../../../lib/db";
 import { test, expect } from 'vitest';
 
 // Hilfsfunktion für Requests
-const createRequest = (obj: any) => new Request('http://localhost/api/challenges/add', {
+const createRequest = (obj: any) => new Request('http://localhost/api/challenges/list', {
   method: 'POST',
   body: JSON.stringify(obj)
 });

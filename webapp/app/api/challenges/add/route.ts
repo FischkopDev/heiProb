@@ -4,12 +4,12 @@ import  pool  from "../../../../lib/db";
 import { NextResponse } from "next/server";
 
 async function addChallenge(body: any){
-   const { title, category, status, summary} = body;
+   const { title, category, status, description} = body;
   try {
     const result = await pool.query(
       `INSERT INTO "Problem" (title, category, state, description)
        VALUES ($1, $2, $3, $4) RETURNING problem_id`,
-       [title, category, status, summary]
+       [title, category, status, description]
     );
     const id = result.rows[0].problem_id;
     return id;
