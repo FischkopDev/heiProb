@@ -10,7 +10,7 @@ vi.mock("../../../../lib/db", () => ({
   },
 }));
 
-describe("PATCH /api/experts (Update Expert)", () => {
+describe("PATCH /api/users/update (Update Expert)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

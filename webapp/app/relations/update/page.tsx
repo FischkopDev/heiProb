@@ -1,12 +1,13 @@
-'use client';
+ 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { ExpertFormData } from '../Person';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 interface AddExpertViewProps {
-  onSave: (formData: ExpertFormData) => void;
-  onCancel: () => void;
+  onSave?: (formData: ExpertFormData) => void;
+  onCancel?: () => void;
 }
 
 export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) {
@@ -26,6 +27,44 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     social: false,
   });
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const expertIdParam = searchParams ? searchParams.get('expertId') : null;
+
+  useEffect(() => {
+    const loadExpert = async () => {
+      if (!expertIdParam) return;
+      try {
+        const res = await fetch('/api/users/list');
+        const result = await res.json();
+        const experts = Array.isArray(result.experts) ? result.experts : result;
+        const found = experts.find((e: any) => String(e.expert_id) === String(expertIdParam));
+        if (found) {
+          setFormData((prev) => ({
+            ...prev,
+            name: found.name || '',
+            prename: found.prename || '',
+            title: found.title || '',
+            primary_organization: found.primary_organization || found.organization?.name || '',
+            other_organizations: Array.isArray(found.other_organizations) ? found.other_organizations.join(', ') : (found.other_organizations || ''),
+            scientificAreas: Array.isArray(found.scientificAreas) ? found.scientificAreas.join(', ') : (found.scientificAreas || ''),
+            email: found.email || '',
+            phone: found.phone || '',
+            description: found.description || '',
+            expert_fields: Array.isArray(found.expert_fields) ? found.expert_fields.join(', ') : (found.expert_fields || ''),
+            economic: !!found.economic,
+            science: !!found.science,
+            social: !!found.social,
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to load expert for editing', error);
+      }
+    };
+
+    loadExpert();
+  }, [expertIdParam]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -34,37 +73,41 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     }));
   };
 
-  const createUserInDB = async (expertData: ExpertFormData) => {
+  const updateExpertInDB = async (expertData: ExpertFormData) => {
     try {
+      if (!expertIdParam) {
+        throw new Error('Expert ID not provided');
+      }
 
-      const response = await fetch('/api/users/create', {
-        method: 'POST',
+      const response = await fetch('/api/users/update', {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          expert_id: Number(expertIdParam),
           name: expertData.name,
           prename: expertData.prename,
           title: expertData.title,
           email: expertData.email,
           description: expertData.description,
           primary_organization: expertData.primary_organization,
-          science: expertData.science,
           economic: expertData.economic,
-          social: expertData.social
+          science: expertData.science,
+          social: expertData.social,
         }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result?.error || 'Failed to create expert');
+        throw new Error(result?.error || 'Failed to update expert');
       }
 
-      console.log('Expert created successfully:', result.expert);
-      return result.expert;
+      console.log('Expert updated successfully:', result.data || result);
+      return result.data || result;
     } catch (error) {
-      console.error('Error creating expert:', error);
+      console.error('Error updating expert:', error);
       throw error;
     }
   };
@@ -78,15 +121,24 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     }
 
     try {
-      await createUserInDB(formData);
-      onSave(formData);
+      await updateExpertInDB(formData);
+      if (onSave) {
+        onSave(formData);
+      } else {
+        router.push('/relations');
+      }
     } catch (error: any) {
       alert(
-        `Fehler beim Anlegen der Expert*in: ${
+        `Fehler beim Aktualisieren der Expert*in: ${
           error?.message || 'Unbekannter Fehler'
         }`
       );
     }
+  };
+
+  const handleCancel = () => {
+    if (onCancel) onCancel();
+    else router.push('/relations');
   };
 
   return (
@@ -94,7 +146,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
       <div className="flex items-center justify-between gap-4 mb-6">
         <button
           type="button"
-          onClick={onCancel}
+          onClick={handleCancel}
           className="inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 transition"
         >
           <ArrowLeft size={20} /> Zurück zum Experten-Netzwerk
@@ -270,7 +322,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
           <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-200">
             <button
               type="button"
-              onClick={onCancel}
+              onClick={handleCancel}
               className="w-full sm:w-auto px-4 py-2 text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50 transition font-medium"
             >
               Abbrechen
@@ -279,7 +331,13 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
               type="submit"
               className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
             >
-              Expert*in hinzufügen
+              Änderungen speichern
+            </button>
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
+            >
+              Expert*in Löschen
             </button>
           </div>
         </form>

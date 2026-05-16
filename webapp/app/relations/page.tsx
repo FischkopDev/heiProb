@@ -279,7 +279,7 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
                   <h3 className="text-lg font-bold text-slate-900">{expert.prename} {expert.name}</h3>
                   <p className="text-sm text-slate-600">{expert.title}</p>
                 </div>
-                <button onClick={() => router.push("/relations/update")} className="px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
+                <button onClick={() => router.push(`/relations/update?expertId=${expert.expert_id}`)} className="px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
                   Bearbeiten
                 </button>
               </div>
