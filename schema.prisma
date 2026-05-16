@@ -1,0 +1,73 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../generated/client"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Expert {
+  expert_id               Int               @id @default(autoincrement())
+  name                    String
+  prename                 String
+  title                   String?
+  email                   String?           
+  description             String?
+  location                String?
+  network                 String?
+  last_contact            DateTime          @default(now())
+  primary_organization_id Int               @relation(fields: [primary_organization_id], references: [organization_id])
+}
+
+model Organization {
+  organization_id Int      @id @default(autoincrement())
+  name            String
+  location        String?
+  field           String?
+  description     String?
+}
+
+model ExpertField {
+  id          Int     @id @default(autoincrement())
+  expert_id   Int     @relation(fields: [expert_id], references: [expert_id])
+  field       String
+  description String?
+  economic    Boolean @default(false)
+  science     Boolean @default(false)
+  social      Boolean @default(false)
+}
+
+model Project {
+  id          Int               @id @default(autoincrement())
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  state       String?
+  lastUpdate  DateTime          @default(now())
+  location    String?
+  websiteUrl  String?
+  details     String? 
+}
+
+model ProjectRelation {
+  expert_id    Expert   @relation(fields: [expert_id], references: [expert_id])
+  problem_id   Problem? @relation(fields: [problem_id], references: [problem_id])
+  project_id   Project  @relation(fields: [project_id], references: [project_id])
+
+  @@id([project_id, expert_id])
+}
+
+model Problem {
+  problem_id       Int               @id @default(autoincrement())
+  expert_id        Int               @relation(fields: [expert_id], references: [expert_id])
+  title            String
+  description      String?
+}
+
+model Test {
+  title   String @id
+  content String
+}
