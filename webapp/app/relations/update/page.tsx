@@ -141,6 +141,35 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     else router.push('/relations');
   };
 
+  const deleteExpertInDB = async () => {
+    if (!expertIdParam) {
+      alert('Expert*innen-ID fehlt. Löschung nicht möglich.');
+      return;
+    }
+
+    const confirmed = window.confirm('Möchten Sie diese Expert*in wirklich löschen?');
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch('/api/users/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ expert_id: Number(expertIdParam) }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.error || 'Löschen fehlgeschlagen');
+      }
+
+      router.push('/relations');
+    } catch (error: any) {
+      alert(`Fehler beim Löschen der Expert*in: ${error?.message || 'Unbekannter Fehler'}`);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 mb-6">
@@ -334,7 +363,8 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
               Änderungen speichern
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={deleteExpertInDB}
               className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
             >
               Expert*in Löschen
