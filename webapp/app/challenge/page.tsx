@@ -5,13 +5,13 @@ import { AlertCircle, X, Loader2, Plus } from 'lucide-react'; // Loader-Icon fü
 import { useRouter } from "next/navigation";
 
 interface ProblemItem {
-  id: number;
+  problem_id: number;
   title: string;
   tags: string;
   category: string;
   status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst';
   statusColor: 'amber' | 'green' | 'slate';
-  summary: string;
+  description: string;
   impact: string;
   stakeholders: string;
   nextSteps: string;
@@ -24,6 +24,33 @@ export default function ProblemView() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const deleteChallengeInDB = async () => {
+    if (!selectedProblem) return;
+
+    const confirmed = window.confirm('Möchten Sie diese Challenge wirklich löschen?');
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch('/api/challenges/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ challenge_id: selectedProblem.problem_id }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.error || 'Löschen fehlgeschlagen');
+      }
+
+      setProblems((prev) => prev.filter((problem) => problem.problem_id !== selectedProblem.problem_id));
+      setSelectedProblem(null);
+    } catch (err: any) {
+      setError(err?.message || 'Fehler beim Löschen der Challenge');
+    }
+  };
 
   // 3. Funktion für den GET-Request definieren
   useEffect(() => {
@@ -105,7 +132,7 @@ export default function ProblemView() {
               <tbody className="divide-y divide-slate-100">
                 {problems.map((problem) => (
                   <tr
-                    key={problem.id}
+                    key={problem.problem_id}
                     className="hover:bg-slate-50 transition cursor-pointer"
                     onClick={() => setSelectedProblem(problem)}
                   >
@@ -155,7 +182,7 @@ export default function ProblemView() {
           <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full overflow-hidden">
             <div className="p-6 border-b border-slate-200 flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold">{selectedProblem.title}</h2>
+                <h2 className="text-2xl font-bold text-black">{selectedProblem.title}</h2>
                 <p className="text-sm text-slate-500">{selectedProblem.tags}</p>
               </div>
               <button
@@ -183,24 +210,23 @@ export default function ProblemView() {
               <div className="space-y-4">
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900">Kurzbeschreibung</h3>
-                  <p className="mt-2 text-slate-600">{selectedProblem.summary}</p>
+                  <p className="mt-2 text-slate-600">{selectedProblem.description}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900">Auswirkungen</h3>
                   <p className="mt-2 text-slate-600">{selectedProblem.impact}</p>
                 </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Beteiligte Akteur*innen</h3>
-                  <p className="mt-2 text-slate-600">{selectedProblem.stakeholders}</p>
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Nächste Schritte</h3>
-                  <p className="mt-2 text-slate-600">{selectedProblem.nextSteps}</p>
-                </div>
               </div>
             </div>
 
-            <div className="p-6 border-t border-slate-200 flex justify-end">
+            <div className="p-6 border-t border-slate-200 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={deleteChallengeInDB}
+                className="rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white hover:bg-red-700 transition"
+              >
+                Löschen
+              </button>
               <button
                 type="button"
                 onClick={() => setSelectedProblem(null)}
