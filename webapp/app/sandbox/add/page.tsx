@@ -1,8 +1,14 @@
 "use client";
 
 import React, { useState } from 'react';
-import { PlusCircle, ArrowLeft, Calendar, FileText, MapPin, Link2 } from 'lucide-react';
+import { PlusCircle, ArrowLeft, Calendar, FileText, MapPin, Link2, Trash2, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+
+interface ProjectMember {
+  id: string;
+  name: string;
+  role: 'R' | 'A' | 'C' | 'I';
+}
 
 interface NewProject {
   title: string;
@@ -13,6 +19,7 @@ interface NewProject {
   location: string;
   websiteUrl: string;
   details: string;
+  members: ProjectMember[];
 }
 
 export default function AddProjectView() {
@@ -26,33 +33,103 @@ export default function AddProjectView() {
     location: '',
     websiteUrl: '',
     details: '',
+    members: [],
   });
 
+  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberRole, setNewMemberRole] = useState<'R' | 'A' | 'C' | 'I'>('R');
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleAddMember = () => {
+    if (!newMemberName.trim()) {
+      setError('Bitte einen Namen eingeben.');
+      return;
+    }
+
+    const newMember: ProjectMember = {
+      id: Date.now().toString(),
+      name: newMemberName,
+      role: newMemberRole,
+    };
+
+    setFormData((prev) => ({
+      ...prev,
+      members: [...prev.members, newMember],
+    }));
+
+    setNewMemberName('');
+    setNewMemberRole('R');
+    setError(null);
+  };
+
+  const handleRemoveMember = (memberId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      members: prev.members.filter((m) => m.id !== memberId),
+    }));
+  };
+
+  const handleMemberRoleChange = (memberId: string, newRole: 'R' | 'A' | 'C' | 'I') => {
+    setFormData((prev) => ({
+      ...prev,
+      members: prev.members.map((m) =>
+        m.id === memberId ? { ...m, role: newRole } : m
+      ),
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsSubmitting(true);
 
     if (!formData.title.trim()) {
       setError('Der Projekttitel ist ein Pflichtfeld.');
+      setIsSubmitting(false);
       return;
     }
 
     const projectToSubmit = {
-      ...formData,
-      startDate: formData.startDate ? new Date(formData.startDate) : null,
-      endDate: formData.endDate ? new Date(formData.endDate) : null,
-      lastUpdate: new Date(),
+      title: formData.title,
+      description: formData.description || null,
+      startDate: formData.startDate ? new Date(formData.startDate).toISOString() : null,
+      endDate: formData.endDate ? new Date(formData.endDate).toISOString() : null,
+      state: formData.state,
+      location: formData.location || null,
+      websiteUrl: formData.websiteUrl || null,
+      details: formData.details || null,
+      members: formData.members.map(({ name, role }) => ({ name, role })),
+      lastUpdate: new Date().toISOString(),
     };
 
-    console.log('Submitting Project to DB:', projectToSubmit);
-    alert('Projekt erfolgreich angelegt! (Konsole prüfen)');
+    try {
+      const response = await fetch('/api/project/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(projectToSubmit),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.error || 'Fehler beim Speichern des Projekts.');
+      }
+
+      console.log('Projekt erfolgreich erstellt:', result);
+      router.push('/sandbox');
+    } catch (err: any) {
+      console.error('Error submitting project:', err);
+      setError(err?.message || 'Ein unerwarteter Fehler ist aufgetreten.');
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -209,6 +286,98 @@ export default function AddProjectView() {
             />
           </div>
 
+          {/* Team Members Section */}
+          <div className="border-t border-slate-100 pt-6">
+            <h4 className="font-bold text-black mb-4 flex items-center gap-2">
+              <UserPlus size={18} className="text-blue-600" /> Projektteam (RACI Matrix)
+            </h4>
+
+            {/* Add Member Form */}
+            <div className="space-y-3 mb-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Name / Person</label>
+                  <select
+                    value={newMemberName}
+                    onChange={(e) => setNewMemberName(e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-800 bg-white"
+                  >
+                    <option value="">-- Person auswählen --</option>
+                    <option value="Max Müller">Max Müller</option>
+                    <option value="Anna Schmidt">Anna Schmidt</option>
+                    <option value="Peter Weber">Peter Weber</option>
+                    <option value="Julia König">Julia König</option>
+                    <option value="Thomas Bauer">Thomas Bauer</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-2">RACI Rolle</label>
+                  <select
+                    value={newMemberRole}
+                    onChange={(e) => setNewMemberRole(e.target.value as 'R' | 'A' | 'C' | 'I')}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-800 bg-white"
+                  >
+                    <option value="R">R - Responsible (Durchführung)</option>
+                    <option value="A">A - Accountable (Verantwortlich)</option>
+                    <option value="C">C - Consulted (Konsultiert)</option>
+                    <option value="I">I - Informed (Informiert)</option>
+                  </select>
+                </div>
+
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={handleAddMember}
+                    className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition"
+                  >
+                    Person hinzufügen
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Team Members List */}
+            {formData.members.length > 0 ? (
+              <div className="space-y-2">
+                {formData.members.map((member) => (
+                  <div
+                    key={member.id}
+                    className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg hover:border-blue-300 transition"
+                  >
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-black">{member.name}</p>
+                    </div>
+
+                    <select
+                      value={member.role}
+                      onChange={(e) => handleMemberRoleChange(member.id, e.target.value as 'R' | 'A' | 'C' | 'I')}
+                      className="px-3 py-1 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 bg-white mr-2"
+                    >
+                      <option value="R">R - Responsible</option>
+                      <option value="A">A - Accountable</option>
+                      <option value="C">C - Consulted</option>
+                      <option value="I">I - Informed</option>
+                    </select>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMember(member.id)}
+                      className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                      title="Person entfernen"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-slate-500 text-center py-4 bg-slate-50 border border-slate-200 rounded-lg">
+                Noch keine Personen hinzugefügt. Füge Teamkollegen zur RACI Matrix hinzu.
+              </p>
+            )}
+          </div>
+
           {/* FOOTER ACTIONS */}
           <div className="pt-4 border-t border-slate-100 flex justify-end gap-3 bg-white">
             <button
@@ -220,9 +389,10 @@ export default function AddProjectView() {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Projekt speichern
+              {isSubmitting ? 'Speichern…' : 'Projekt speichern'}
             </button>
           </div>
         </form>

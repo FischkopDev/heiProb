@@ -10,7 +10,7 @@ export function Sidebar() {
 
   const navItems = [
     { name: "Challenges", href: "/challenge", icon: AlertCircle, id: "database" },
-    { name: "Sandbox-Projekte", href: "/sandbox", icon: Briefcase, id: "sandbox" },
+    { name: "Test in Heidelberg", href: "/sandbox", icon: Briefcase, id: "sandbox" },
     { name: "Experten-Netzwerk", href: "/relations", icon: Users, id: "experten" },
   ];
 

@@ -8,6 +8,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum RACI {
+  R
+  A
+  C
+  I
+}
 
 model Expert {
   expert_id               Int               @id @default(autoincrement())
@@ -64,6 +70,7 @@ model ProjectRelation {
   expert_id  Int
   problem_id Int?
   project_id Int
+  role       RACI      @default(R)
 
   expert  Expert   @relation(fields: [expert_id], references: [expert_id])
   problem Problem? @relation(fields: [problem_id], references: [problem_id])
