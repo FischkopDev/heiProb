@@ -1,13 +1,19 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusCircle, ArrowLeft, Calendar, FileText, MapPin, Link2, Trash2, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface ProjectMember {
   id: string;
+  expertId: number;
   name: string;
   role: 'R' | 'A' | 'C' | 'I';
+}
+
+interface ExpertOption {
+  id: number;
+  name: string;
 }
 
 interface NewProject {
@@ -36,10 +42,37 @@ export default function AddProjectView() {
     members: [],
   });
 
-  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberId, setNewMemberId] = useState('');
   const [newMemberRole, setNewMemberRole] = useState<'R' | 'A' | 'C' | 'I'>('R');
+  const [expertOptions, setExpertOptions] = useState<ExpertOption[]>([]);
+  const [loadingExperts, setLoadingExperts] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadExperts = async () => {
+      setLoadingExperts(true);
+      try {
+        const response = await fetch('/api/users/list');
+        const data = await response.json();
+
+        if (response.ok && data?.experts) {
+          setExpertOptions(data.experts.map((expert: any) => ({
+            id: expert.expert_id ?? expert.id,
+            name: expert.name,
+          })));
+        } else {
+          console.error('Could not load expert list', data);
+        }
+      } catch (fetchError) {
+        console.error('Error loading expert list:', fetchError);
+      } finally {
+        setLoadingExperts(false);
+      }
+    };
+
+    loadExperts();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -47,14 +80,21 @@ export default function AddProjectView() {
   };
 
   const handleAddMember = () => {
-    if (!newMemberName.trim()) {
-      setError('Bitte einen Namen eingeben.');
+    if (!newMemberId) {
+      setError('Bitte eine Person aus der Liste auswählen.');
+      return;
+    }
+
+    const selectedExpert = expertOptions.find((expert) => expert.id.toString() === newMemberId);
+    if (!selectedExpert) {
+      setError('Ausgewählte Person konnte nicht gefunden werden.');
       return;
     }
 
     const newMember: ProjectMember = {
       id: Date.now().toString(),
-      name: newMemberName,
+      expertId: selectedExpert.id,
+      name: selectedExpert.name,
       role: newMemberRole,
     };
 
@@ -63,7 +103,7 @@ export default function AddProjectView() {
       members: [...prev.members, newMember],
     }));
 
-    setNewMemberName('');
+    setNewMemberId('');
     setNewMemberRole('R');
     setError(null);
   };
@@ -104,12 +144,12 @@ export default function AddProjectView() {
       location: formData.location || null,
       websiteUrl: formData.websiteUrl || null,
       details: formData.details || null,
-      members: formData.members.map(({ name, role }) => ({ name, role })),
+      members: formData.members.map(({ expertId, name, role }) => ({ expertId, name, role })),
       lastUpdate: new Date().toISOString(),
     };
 
     try {
-      const response = await fetch('/api/project/add', {
+      const response = await fetch('/api/sandbox/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -298,16 +338,20 @@ export default function AddProjectView() {
                 <div>
                   <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Name / Person</label>
                   <select
-                    value={newMemberName}
-                    onChange={(e) => setNewMemberName(e.target.value)}
+                    value={newMemberId}
+                    onChange={(e) => setNewMemberId(e.target.value)}
                     className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-800 bg-white"
                   >
                     <option value="">-- Person auswählen --</option>
-                    <option value="Max Müller">Max Müller</option>
-                    <option value="Anna Schmidt">Anna Schmidt</option>
-                    <option value="Peter Weber">Peter Weber</option>
-                    <option value="Julia König">Julia König</option>
-                    <option value="Thomas Bauer">Thomas Bauer</option>
+                    {loadingExperts ? (
+                      <option value="" disabled>Lade Expert:innen…</option>
+                    ) : expertOptions.length > 0 ? (
+                      expertOptions.map((expert) => (
+                        <option key={expert.id} value={expert.id}>{expert.name}</option>
+                      ))
+                    ) : (
+                      <option value="" disabled>Keine Expert:innen gefunden</option>
+                    )}
                   </select>
                 </div>
 
