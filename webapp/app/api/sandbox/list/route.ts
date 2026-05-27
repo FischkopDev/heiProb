@@ -14,8 +14,19 @@ export async function getListOfSandboxProjects() {
       p.location,
       p."websiteUrl" AS websiteUrl,
       p.details,
-      p."lastUpdate" AS lastUpdate
+      p."lastUpdate" AS lastUpdate,
+      COALESCE(
+        json_agg(DISTINCT jsonb_build_object(
+          'expert_id', e.expert_id,
+          'name', e.name,
+          'role', pr.role
+        )) FILTER (WHERE e.expert_id IS NOT NULL),
+        '[]'
+      ) AS experts
      FROM "Project" p
+     LEFT JOIN "ProjectRelation" pr ON pr.project_id = p.id
+     LEFT JOIN "Expert" e ON e.expert_id = pr.expert_id
+     GROUP BY p.id
      ORDER BY p."lastUpdate" DESC
      LIMIT 50`
   );

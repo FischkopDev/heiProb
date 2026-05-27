@@ -117,7 +117,7 @@ export default function ProjectDetailsPage() {
             ? rawProject.experts.map((expert: any) => ({
                 id: String(expert.expert_id ?? expert.id ?? ''),
                 name: expert.name,
-                role: 'R',
+                role: expert.role || 'R',
               }))
             : [],
         });
