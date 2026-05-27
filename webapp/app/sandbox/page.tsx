@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { CheckCircle2 } from 'lucide-react';
 
 interface Project {
@@ -13,6 +14,7 @@ interface Project {
 }
 
 export default function SandboxProjectView() {
+  const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +108,11 @@ export default function SandboxProjectView() {
               </tr>
             ) : projects.length > 0 ? (
               projects.map((project) => (
-                <tr key={project.id} className="hover:bg-slate-50 transition">
+                <tr
+                  key={project.id}
+                  className="hover:bg-slate-50 transition cursor-pointer"
+                  onClick={() => router.push(`/sandbox/project/details?id=${project.id}`)}
+                >
                   <td className="p-4">
                     <div className="font-bold text-slate-800">{project.title}</div>
                     <div className="text-xs text-slate-500">{project.topics} • <span className="text-blue-600">ID: {project.id}</span></div>
@@ -131,7 +137,7 @@ export default function SandboxProjectView() {
                     </div>
                   </td>
                   <td className="p-4 text-right">
-                    <span className="text-xs font-bold text-blue-600">{project.value}</span>
+                    <span className="text-xs font-bold text-blue-600">Details</span>
                   </td>
                 </tr>
               ))
