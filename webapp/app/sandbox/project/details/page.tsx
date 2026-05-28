@@ -175,12 +175,43 @@ export default function ProjectDetailsPage() {
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
+    setError(null);
 
-    // TODO: connect this save button to the backend update API later.
-    console.log('Save project details', project);
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/sandbox/update', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          project_id: Number(project.id),
+          title: project.title,
+          description: project.description,
+          startDate: project.startDate || null,
+          endDate: project.endDate || null,
+          state: project.state,
+          location: project.location,
+          websiteUrl: project.websiteUrl,
+          details: project.details,
+          members: project.experts.map((member) => ({
+            expertId: Number(member.id) || undefined,
+            name: member.name,
+            role: member.role,
+          })),
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Fehler beim Speichern des Projekts.');
+      }
+
+      router.push('/sandbox');
+    } catch (saveError: any) {
+      setError(saveError?.message || 'Fehler beim Speichern des Projekts.');
+    } finally {
       setIsSaving(false);
-    }, 300);
+    }
   };
 
   return (
