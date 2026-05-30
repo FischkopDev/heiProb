@@ -20,15 +20,31 @@ export async function deleteExpert(id: number): Promise<boolean> {
   console.log(`Deleting expert with ID: ${id}`);
 
   try {
+    await pool.query('BEGIN');
+
+    // Entfernen aller Projektbeziehungen für diesen Experten
+    await pool.query(`DELETE FROM "ProjectRelation" WHERE expert_id = $1`, [id]);
+
+    // Entfernen aller Expertisefelder für diesen Experten
+    await pool.query(`DELETE FROM "ExpertField" WHERE expert_id = $1`, [id]);
+
+    // Jetzt der eigentliche Löschvorgang des Experten
     const result = await pool.query(
       `DELETE FROM "Expert" WHERE expert_id = $1 RETURNING expert_id`,
       [id]
     );
 
+    await pool.query('COMMIT');
+
     // Wenn Zeilen gelöscht wurden, war es erfolgreich
     return result.rows.length > 0;
   } catch (error) {
     console.error("Error deleting expert from database:", error);
+    try {
+      await pool.query('ROLLBACK');
+    } catch (rbErr) {
+      console.error('Error rolling back transaction:', rbErr);
+    }
     throw error; // Fehler weiterwerfen für den Handler
   }
 }
