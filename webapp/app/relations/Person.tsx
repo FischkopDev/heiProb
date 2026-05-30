@@ -65,7 +65,7 @@ export interface ExpertFormData {
           primary_organization: expert.organization?.name || expert.primary_organization || '',
           other_organizations: Array.isArray(expert.other_organizations) ? expert.other_organizations : [],
           scientificAreas: Array.isArray(expert.scientificAreas) ? expert.scientificAreas : [],
-          expert_fields: Array.isArray(expert.expert_fields) ? expert.expert_fields : [],
+          expert_fields: Array.isArray(expert.expertFields) ? expert.expertFields : (Array.isArray(expert.expert_fields) ? expert.expert_fields : []),
           organization: expert.organization,
         }));
       }

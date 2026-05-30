@@ -68,12 +68,51 @@ export async function getOrganizationIdByName(name: string): Promise<number | nu
 }
 
 /**
+ * Fügt Expertisefelder für einen Experten in die Datenbank ein.
+ * 
+ * @param expertId - Die ID des Experten.
+ * @param expertFields - Array von Feld-Strings, die die Expertisen des Experten darstellen.
+ * 
+ * @returns Array der Datenbank-Einfügeergebnisse (pg.QueryResult[]).
+ * 
+ * @remarks
+ * - Fängt Fehler ab und loggt sie, wirft aber keine Exception.
+ * - Gibt ein leeres Array zurück, wenn expertFields leer oder undefined ist.
+ */
+export async function addExpertFields(expertId: number, expertFields: string[]) {
+  console.log(`Adding expert fields for expert ${expertId}`);
+
+  if (!expertFields || expertFields.length === 0) {
+    console.log("No expert fields provided");
+    return [];
+  }
+
+  try {
+    const results = [];
+    for (const field of expertFields) {
+      const result = await pool.query(
+        `INSERT INTO "ExpertField" (expert_id, field)
+         VALUES ($1, $2)`,
+        [expertId, field]
+      );
+      results.push(result);
+    }
+    console.log(`Successfully added ${results.length} expert fields`);
+    return results;
+  } catch (error) {
+    console.error("Error adding expert fields:", error);
+    return [];
+  }
+}
+
+/**
  * Erstellt einen neuen Experten in der Datenbank.
  * 
  * Dieser Prozess beinhaltet:
  * 1. Prüfung, ob die angegebene `primary_organization` existiert.
  * 2. Falls nein: Automatische Erstellung der Organisation mit Standardwerten für `field` und `description`.
  * 3. Einfügen des Experten mit der aufgelösten Organisations-ID.
+ * 4. Optional: Einfügen der Expertisefelder (expertFields).
  * 
  * @param body - Das Objekt mit den Experten-Daten.
  * @param body.name - Vorname des Experten (erforderlich).
@@ -86,16 +125,18 @@ export async function getOrganizationIdByName(name: string): Promise<number | nu
  * @param body.economic - Flag für wirtschaftlichen Fokus (default: false).
  * @param body.science - Flag für wissenschaftlichen Fokus (default: false).
  * @param body.social - Flag für sozialen Fokus (default: false).
+ * @param body.expertFields - Array von Feld-Strings für die Expertisen des Experten (optional).
  * 
- * @returns Das Ergebnis der Datenbank-Einfügeoperation (pg.QueryResult).
+ * @returns Objekt mit `expertId` und `fields` (Array von Einfügeergebnissen).
  * 
  * @remarks
  * - Die Funktion erstellt automatisch eine Organisation, wenn sie nicht existiert, 
  *   wobei `field` und `description` leer gesetzt werden.
  * - Boolesche Felder (`economic`, `science`, `social`) defaults auf `false`, wenn nicht übergeben.
+ * - Expertisefelder werden nach dem Einfügen des Experten hinzugefügt.
  */
 export async function addExpert(body: any) {
-  const { name, prename, title, email, description, primary_organization, location, economic, science, social} = body;
+  const { name, prename, title, email, description, primary_organization, location, economic, science, social, expertFields} = body;
   console.log("Adding new expert to database");
 
   //Check if organization exists
@@ -105,14 +146,23 @@ export async function addExpert(body: any) {
     organizationId = await addOrganization(primary_organization, location, "", "");
   }
 
-
   //Add expert to database
   const result = await pool.query(
       `INSERT INTO "Expert" (name, prename, title, email, description, location, economic, science, social, primary_organization_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING expert_id`,
       [name, prename, title || null, email || null, description || null, location || null, economic || false, science || false, social || false, organizationId]
     );
-  return result;
+  
+  const expertId = result.rows[0].expert_id;
+  console.log(`Expert created with ID: ${expertId}`);
+
+  // Add expert fields if provided
+  const fieldsResult = await addExpertFields(expertId, expertFields);
+
+  return {
+    expertId,
+    fields: fieldsResult
+  };
 }
 
 
@@ -124,7 +174,7 @@ export async function addExpert(body: any) {
  * 
  * @param request - Die eingehende HTTP-Anfrage.
  * @returns Ein JSON-Antwortobjekt:
- *   - `200`: Erfolg mit `{ success: true }`
+ *   - `200`: Erfolg mit `{ success: true, expertId: number, fieldsAdded: number }`
  *   - `400`: Fehlende Pflichtfelder
  *   - `500`: Interner Serverfehler
  * 
@@ -137,7 +187,8 @@ export async function addExpert(body: any) {
  *   "primary_organization": "Beispiel GmbH",
  *   "title": "Dr.",
  *   "location": "Berlin",
- *   "economic": true
+ *   "economic": true,
+ *   "expertFields": ["KI", "Machine Learning", "Data Science"]
  * }
  */
 export async function POST(request: Request) {
@@ -163,7 +214,9 @@ export async function POST(request: Request) {
     const result = await addExpert(body); 
 
     return NextResponse.json({
-      success: true
+      success: true,
+      expertId: result.expertId,
+      fieldsAdded: result.fields.length
     });
   } catch (error: any) {
     console.error("Error creating expert:", error);

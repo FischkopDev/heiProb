@@ -310,13 +310,36 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
               <div className="mb-4">
                 <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Fachbereiche</p>
                 <div className="flex flex-wrap gap-2">
+                  {expert.scientificAreas && expert.scientificAreas.length > 0 ? (
+                    expert.scientificAreas.map((area) => (
+                      <span
+                        key={area}
+                        className="px-3 py-1.5 text-xs font-medium rounded-full bg-purple-50 text-purple-700 border border-purple-200"
+                      >
+                        {area}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-400">Keine Fachbereiche eingetragen</span>
+                  )}
                 </div>
               </div>
 
               <div className="mb-4">
                 <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Expertise</p>
                 <div className="flex flex-wrap gap-2">
-                  
+                  {expert.expert_fields && expert.expert_fields.length > 0 ? (
+                    expert.expert_fields.map((field) => (
+                      <span
+                        key={field}
+                        className="px-3 py-1.5 text-xs font-medium rounded-full bg-green-50 text-green-700 border border-green-200"
+                      >
+                        {field}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-400">Keine Expertise eingetragen</span>
+                  )}
                 </div>
               </div>
 
