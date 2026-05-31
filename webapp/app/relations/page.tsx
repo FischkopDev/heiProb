@@ -280,11 +280,6 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
                         .join(' · ')}
                     </div>
                   )}
-                  {expert.organization?.description && (
-                    <div className="text-slate-500 text-xs">
-                      {expert.organization.description}
-                    </div>
-                  )}
                 </div>
               </div>
 

@@ -345,7 +345,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
               <input
                 type="date"
                 name="primary_organization"
-                value={formData.primary_organization}
+                value={formData.last_contact}
                 onChange={handleInputChange}
                 placeholder="z.B. Universität Heidelberg"
                 className="w-half px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
