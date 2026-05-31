@@ -21,9 +21,9 @@ export async function addOrganization(name: string, location: string, field: str
 
   try {
     const result = await pool.query(
-      `INSERT INTO "Organization" (name, description, field, location)
+      `INSERT INTO "Organization" (name, location, field, description)
        VALUES ($1, $2, $3, $4) RETURNING organization_id`,
-      [name, description, field, location]
+      [name, location, field, description]
     );
     const id = result.rows[0].organization_id;
     return id;
@@ -126,6 +126,7 @@ export async function addExpertFields(expertId: number, expertFields: string[]) 
  * @param body.science - Flag für wissenschaftlichen Fokus (default: false).
  * @param body.social - Flag für sozialen Fokus (default: false).
  * @param body.expertFields - Array von Feld-Strings für die Expertisen des Experten (optional).
+ * @param body.organization_field - Feld/Sektor der Organisation (optional).
  * 
  * @returns Objekt mit `expertId` und `fields` (Array von Einfügeergebnissen).
  * 
@@ -136,21 +137,21 @@ export async function addExpertFields(expertId: number, expertFields: string[]) 
  * - Expertisefelder werden nach dem Einfügen des Experten hinzugefügt.
  */
 export async function addExpert(body: any) {
-  const { name, prename, title, email, description, primary_organization, location, economic, science, social, expertFields} = body;
+  const { name, prename, title, email, description, primary_organization, location, economic, science, social, expertFields, organization_field, phone } = body;
   console.log("Adding new expert to database");
 
   //Check if organization exists
   let organizationId = await getOrganizationIdByName(primary_organization);
   if(organizationId == null){
     // Organisation wird automatisch erstellt, falls nicht vorhanden
-    organizationId = await addOrganization(primary_organization, location, "", "");
+    organizationId = await addOrganization(primary_organization, location, organization_field, description);
   }
 
   //Add expert to database
   const result = await pool.query(
-      `INSERT INTO "Expert" (name, prename, title, email, description, location, economic, science, social, primary_organization_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING expert_id`,
-      [name, prename, title || null, email || null, description || null, location || null, economic || false, science || false, social || false, organizationId]
+      `INSERT INTO "Expert" (name, prename, title, email, number, description, location, economic, science, social, primary_organization_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING expert_id`,
+      [name, prename, title || null, email || null, phone || null, description || null, location || null, economic || false, science || false, social || false, organizationId]
     );
   
   const expertId = result.rows[0].expert_id;

@@ -13,14 +13,14 @@ export interface Expert {
   expert_id: number;
   name: string;
   prename: string;
-  title: string;
+  title?: string;
   primary_organization: string;
   other_organizations: string[];
   scientificAreas: string[];
-  email: string;
+  email?: string;
   phone?: string;
-  description: string;
-  last_contact: string;
+  description?: string;
+  last_contact?: string;
   expert_fields: string[];
   economic: boolean;
   science: boolean;
@@ -30,13 +30,14 @@ export interface Expert {
 
 export interface ExpertFormData {
   name: string;
-  prename: string;
   title: string;
+  prename: string;
   primary_organization: string;
   other_organizations: string;
   scientificAreas: string;
   email: string;
   phone: string;
+  last_contact?: string;
   description: string;
   expert_fields: string;
   economic: boolean;
@@ -65,7 +66,9 @@ export interface ExpertFormData {
           primary_organization: expert.organization?.name || expert.primary_organization || '',
           other_organizations: Array.isArray(expert.other_organizations) ? expert.other_organizations : [],
           scientificAreas: Array.isArray(expert.scientificAreas) ? expert.scientificAreas : [],
-          expert_fields: Array.isArray(expert.expertFields) ? expert.expertFields : (Array.isArray(expert.expert_fields) ? expert.expert_fields : []),
+            expert_fields: Array.isArray(expert.expertFields) ? expert.expertFields : (Array.isArray(expert.expert_fields) ? expert.expert_fields : []),
+            phone: expert.phone || expert.number || undefined,
+            last_contact: expert.last_contact || expert.lastContact || undefined,
           organization: expert.organization,
         }));
       }

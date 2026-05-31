@@ -99,7 +99,7 @@ export async function getOrganizationIdByName(name: string): Promise<number | nu
 export async function updateExpert(id: number, body: any) {
   const { 
     name, prename, title, email, description, 
-    primary_organization, location, economic, science, social 
+    primary_organization, location, economic, science, social, last_contact 
   } = body;
 
   console.log(`Updating expert with ID: ${id}`);
@@ -129,14 +129,15 @@ export async function updateExpert(id: number, body: any) {
       economic = COALESCE($7, economic),
       science = COALESCE($8, science),
       social = COALESCE($9, social),
-      primary_organization_id = COALESCE($10, primary_organization_id)
-    WHERE expert_id = $11
+      last_contact = COALESCE($10, last_contact),
+      primary_organization_id = COALESCE($11, primary_organization_id)
+    WHERE expert_id = $12
     RETURNING *;
   `;
 
   const values = [
     name, prename, title, email, description, 
-    location, economic, science, social, organizationId, id
+    location, economic, science, social, last_contact, organizationId, id
   ];
 
   const result = await pool.query(query, values);

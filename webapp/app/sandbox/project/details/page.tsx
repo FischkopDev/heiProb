@@ -330,7 +330,7 @@ export default function ProjectDetailsPage() {
 
           <div className="border-t border-slate-100 pt-6">
             <h4 className="font-bold text-black mb-4 flex items-center gap-2">
-              <UserPlus size={18} className="text-blue-600" /> Projektteam (RACI Matrix)
+              <UserPlus size={18} className="text-blue-600" /> Verantwortliche und Beteiligte
             </h4>
 
             <div className="space-y-3 mb-6 p-4 bg-slate-50 rounded-lg border border-slate-200">

@@ -15,6 +15,7 @@ model Expert {
   prename                 String
   title                   String?
   email                   String?
+  number                  String?
   description             String?
   location                String?
   last_contact            DateTime      @default(now())

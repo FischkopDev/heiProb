@@ -141,9 +141,7 @@ test("AddExpertFields with Empty Array", async () => {
     const expertResult = await addExpert(expertData);
     const expertId = expertResult.expertId;
 
-    // 2. Versuche, leere Felder hinzuzufügen
-    const emptyFields = [];
-    const fieldsResult = await addExpertFields(expertId, emptyFields);
+    const fieldsResult = await addExpertFields(expertId, []);
 
     // 3. Verifiziere, dass keine Felder hinzugefügt wurden
     expect(fieldsResult.length).toBe(0);

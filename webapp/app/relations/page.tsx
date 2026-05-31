@@ -106,10 +106,11 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
   ).sort();
 
   /**
-   * @brief Extracts unique scientific areas by flattening the expert data.
+   * @brief Extracts unique organization fields (Fachbereiche) from the expert list.
+   * @note The resulting array is sorted alphabetically and filters out empty values.
    */
   const uniqueScientificAreas = Array.from(
-    new Set(experts.flatMap((e) => e.scientificAreas))
+    new Set(experts.map((e) => e.organization?.field).filter(Boolean))
   ).sort();
 
   /**
@@ -150,7 +151,7 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
       selectedOrganizations.length === 0 || selectedOrganizations.includes(expertOrgName);
     const matchesArea =
       selectedAreas.length === 0 ||
-      expert.scientificAreas.some((area) => selectedAreas.includes(area));
+      selectedAreas.includes(expert.organization?.field || '');
     const matchesField =
       selectedFields.length === 0 || expert.expert_fields.some((field) => selectedFields.includes(field));
 
@@ -201,26 +202,6 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
                 }`}
               >
                 {org}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Scientific Areas */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
-          <h3 className="text-sm font-bold text-slate-900 mb-3">Fachbereiche</h3>
-          <div className="flex flex-wrap gap-2">
-            {uniqueScientificAreas.map((area) => (
-              <button
-                key={area}
-                onClick={() => toggleFilter(area, selectedAreas, setSelectedAreas)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-full transition ${
-                  selectedAreas.includes(area)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                {area}
               </button>
             ))}
           </div>
@@ -277,7 +258,7 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">{expert.prename} {expert.name}</h3>
-                  <p className="text-sm text-slate-600">{expert.title}</p>
+                  <p className="text-sm text-slate-600">{expert.title || ""}</p>
                 </div>
                 <button onClick={() => router.push(`/relations/update?expertId=${expert.expert_id}`)} className="px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
                   Bearbeiten
@@ -308,24 +289,6 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
               </div>
 
               <div className="mb-4">
-                <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Fachbereiche</p>
-                <div className="flex flex-wrap gap-2">
-                  {expert.scientificAreas && expert.scientificAreas.length > 0 ? (
-                    expert.scientificAreas.map((area) => (
-                      <span
-                        key={area}
-                        className="px-3 py-1.5 text-xs font-medium rounded-full bg-purple-50 text-purple-700 border border-purple-200"
-                      >
-                        {area}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-xs text-slate-400">Keine Fachbereiche eingetragen</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="mb-4">
                 <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Expertise</p>
                 <div className="flex flex-wrap gap-2">
                   {expert.expert_fields && expert.expert_fields.length > 0 ? (
@@ -350,22 +313,24 @@ function ExpertenNetzwerkView({ experts, onAddExpert, onEditExpert, onDeleteExpe
                 </div>
               )}
 
-              <div className="flex gap-6 text-sm">
+              <div className="flex flex-wrap items-center gap-4 text-sm">
                 <a
                   href={`mailto:${expert.email}`}
                   className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"
                 >
                   <Mail size={16} />
-                  <span className="text-xs underline">{expert.email}</span>
+                  <span className="text-sm underline">{expert.email}</span>
                 </a>
-                {expert.phone && (
+                {expert.phone ? (
                   <a
                     href={`tel:${expert.phone}`}
                     className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"
                   >
                     <Phone size={16} />
-                    <span className="text-xs underline">{expert.phone}</span>
+                    <span className="text-sm underline">{expert.phone}</span>
                   </a>
+                ) : (
+                  <span className="text-slate-400 text-sm">Keine Telefonnummer vorhanden</span>
                 )}
               </div>
             </div>

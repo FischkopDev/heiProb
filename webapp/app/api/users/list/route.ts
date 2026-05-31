@@ -22,6 +22,7 @@ export async function getListOfPeopleWithOrganization() {
   const result = await pool.query(
     `SELECT
        e.*,
+       e.number AS phone,
        jsonb_build_object(
          'organization_id', o.organization_id,
          'name', o.name,
@@ -33,7 +34,7 @@ export async function getListOfPeopleWithOrganization() {
      FROM "Expert" e
      JOIN "Organization" o ON e.primary_organization_id = o.organization_id
      LEFT JOIN "ExpertField" ef ON e.expert_id = ef.expert_id
-     GROUP BY e.expert_id, e.name, e.prename, e.title, e.email, e.description, e.location, 
+     GROUP BY e.expert_id, e.name, e.prename, e.title, e.email, e.number, e.description, e.location, 
               e.last_contact, e.economic, e.science, e.social, e.primary_organization_id,
               o.organization_id, o.name, o.location, o.field, o.description
      ORDER BY e.name ASC

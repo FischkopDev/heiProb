@@ -20,6 +20,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     scientificAreas: '',
     email: '',
     phone: '',
+    last_contact: '',
     description: '',
     expert_fields: '',
     economic: false,
@@ -50,6 +51,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
             scientificAreas: Array.isArray(found.scientificAreas) ? found.scientificAreas.join(', ') : (found.scientificAreas || ''),
             email: found.email || '',
             phone: found.phone || '',
+            last_contact: found.last_contact ? new Date(found.last_contact).toISOString().slice(0,10) : (found.last_contact || ''),
             description: found.description || '',
             expert_fields: Array.isArray(found.expert_fields) ? found.expert_fields.join(', ') : (found.expert_fields || ''),
             economic: !!found.economic,
@@ -90,6 +92,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
           prename: expertData.prename,
           title: expertData.title,
           email: expertData.email,
+          last_contact: expertData.last_contact,
           description: expertData.description,
           primary_organization: expertData.primary_organization,
           economic: expertData.economic,
@@ -280,17 +283,6 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Fachbereiche (komma-getrennt)</label>
-            <textarea
-              name="scientificAreas"
-              value={formData.scientificAreas}
-              onChange={handleInputChange}
-              placeholder="z.B. Künstliche Intelligenz, Quantencomputing"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
-            />
-          </div>
-
-          <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">Expertise (komma-getrennt)</label>
             <textarea
               name="expert_fields"
@@ -347,6 +339,19 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
               </label>
             </div>
           </div>
+
+                      <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Letzter Kontakt</label>
+              <input
+                type="date"
+                name="primary_organization"
+                value={formData.primary_organization}
+                onChange={handleInputChange}
+                placeholder="z.B. Universität Heidelberg"
+                className="w-half px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
 
           <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-200">
             <button

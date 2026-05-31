@@ -26,6 +26,8 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     social: false,
   });
 
+  const [organizationField, setOrganizationField] = useState<string>('');
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -54,6 +56,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
           email: expertData.email,
           description: expertData.description,
           primary_organization: expertData.primary_organization,
+          organization_field: organizationField,
           science: expertData.science,
           economic: expertData.economic,
           social: expertData.social,
@@ -167,7 +170,18 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">E-Mail *</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Organisationsfeld / Sektor</label>
+              <input
+                type="text"
+                value={organizationField}
+                onChange={(e) => setOrganizationField(e.target.value)}
+                placeholder="z.B. IT, Forschung, Biotechnologie"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Email*</label>
               <input
                 type="email"
                 name="email"
@@ -201,17 +215,6 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
               onChange={handleInputChange}
               placeholder="z.B. Max-Planck-Institut, Tech-Consult GmbH"
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Fachbereiche (komma-getrennt)</label>
-            <textarea
-              name="scientificAreas"
-              value={formData.scientificAreas}
-              onChange={handleInputChange}
-              placeholder="z.B. Künstliche Intelligenz, Quantencomputing"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
             />
           </div>
 
