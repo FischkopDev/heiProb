@@ -214,7 +214,7 @@ export default function ProblemView() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900">Auswirkungen</h3>
-                  <p className="mt-2 text-slate-600">{selectedProblem.impact}</p>
+                  <p className="mt-2 text-slate-600">TODO für späteren Prototypen{selectedProblem.impact}</p>
                 </div>
               </div>
             </div>

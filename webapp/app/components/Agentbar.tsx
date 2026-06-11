@@ -9,7 +9,7 @@ export function Agentbar() {
       {/* HEADER */}
       <div className="p-6 border-b border-slate-100 flex items-center gap-2 bg-slate-50">
         <Sparkles className="text-blue-600" size={20} />
-        <h2 className="font-bold text-sm">HeiProb KI-Agent</h2>
+        <h2 className="font-bold text-sm text-black">HeiProb KI-Agent</h2>
       </div>
       
       {/* CHAT / CONTENT AREA */}

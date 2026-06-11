@@ -99,21 +99,5 @@ export const initialExperts: Expert[] = [
     economic: true,
     science: true,
     social: false
-  },
-  {
-    expert_id: 2,
-    name: "Schmidt",
-    prename: "Sarah",
-    title: "Prof. Dr.",
-    primary_organization: "Charité Berlin",
-    other_organizations: [],
-    scientificAreas: ["Virologie", "Epidemiologie"],
-    email: "sarah.schmidt@charite.de",
-    description: "Expertin für Infektionskrankheiten und öffentliche Gesundheitssysteme.",
-    last_contact: "2024-04-02T14:15:00Z",
-    expert_fields: ["Krisenmanagement", "Public Health"],
-    economic: false,
-    science: true,
-    social: true
   }
 ];
