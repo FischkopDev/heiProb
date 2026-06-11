@@ -4,12 +4,33 @@ import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { ExpertFormData } from '../Person';
 
+/**
+ * Eigenschaften (Props) für die Komponente {@link AddExpertView}.
+ */
 interface AddExpertViewProps {
+  /**
+   * Callback-Funktion, die aufgerufen wird, wenn die Expertendaten erfolgreich validiert und gespeichert wurden.
+   * @param formData - Die eingegebenen Formulardaten des Experten.
+   */
   onSave: (formData: ExpertFormData) => void;
+  /**
+   * Callback-Funktion, um den Vorgang abzubrechen und zur vorherigen Ansicht zurückzukehren.
+   */
   onCancel: () => void;
 }
 
+/**
+ * Eine Next.js-Client-Komponente, die ein Formular zum Erstellen und Speichern 
+ * eines neuen Experten-Profils bereitstellt. Die Daten werden sowohl an die Datenbank 
+ * übertragen als auch über Callbacks an die übergeordnete Komponente zurückgegeben.
+ * * @param props - Die Props für die Komponente.
+ * @returns Ein gerendertes UI-Formular für die Expertenerfassung.
+ */
 export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) {
+  /**
+   * Lokaler State für die Formulardaten der Expert*in.
+   * Initialisiert mit leeren Standardwerten basierend auf dem Typ {@link ExpertFormData}.
+   */
   const [formData, setFormData] = useState<ExpertFormData>({
     name: '',
     prename: '',
@@ -26,8 +47,16 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     social: false,
   });
 
+  /**
+   * Lokaler State für den Bereich oder das Fachgebiet der Organisation (z. B. eine Abteilung oder ein spezifisches Feld).
+   */
   const [organizationField, setOrganizationField] = useState<string>('');
 
+  /**
+   * Generischer Change-Handler für alle standardmäßigen Texteingabefelder (Input und Textarea).
+   * Aktualisiert den `formData`-State dynamisch anhand des `name`-Attributs des HTML-Elements.
+   * * @param e - Das Change-Event des Input- oder Textarea-Elements.
+   */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -36,9 +65,17 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     }));
   };
 
+  /**
+   * Sendet die Expertendaten asynchron per POST-Request an die API-Route `/api/users/create`.
+   * Formatiert dabei kommagetrennte Strings (Expertenfelder) in ein Array um.
+   * * @async
+   * @param expertData - Die rohen Formulardaten aus dem Komponentenzustand.
+   * @returns Verspricht (Promise) das vom Server erstellte und zurückgegebene Experten-Objekt.
+   * @throws {Error} Wenn die Server-Antwort nicht erfolgreich (ok) ist oder ein Netzwerkfehler auftritt.
+   */
   const createUserInDB = async (expertData: ExpertFormData) => {
     try {
-      // Parse expert fields from comma-separated string to array
+      // Wandelt den kommagetrennten String in ein bereinigtes Array um
       const expertFields = expertData.expert_fields
         .split(',')
         .map((field) => field.trim())
@@ -78,9 +115,16 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     }
   };
 
+  /**
+   * Behandelt das Absenden (Submit) des Formulars.
+   * Überprüft die Pflichtfelder, stößt den DB-Upload an und ruft bei Erfolg das `onSave`-Callback auf.
+   * * @async
+   * @param e - Das Formular-Submit-Event von React.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validierung der minimalen Pflichtfelder vor dem Absenden
     if (!formData.name || !formData.prename || !formData.email || !formData.primary_organization) {
       alert('Bitte füllen Sie mindestens Name, Vorname, E-Mail und primäre Organisation aus.');
       return;

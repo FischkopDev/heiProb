@@ -4,7 +4,11 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { LayoutGrid, AlertCircle, Briefcase, Users } from "lucide-react";
-
+/**
+ * 
+ * Die Navigationsleiste mit Verbindung zu den Bereichen Expertennetzwerk, Challenges und Sandbox-Projekte.
+ * 
+ */
 export function Sidebar() {
   const pathname = usePathname();
 

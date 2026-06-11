@@ -1,16 +1,38 @@
- 'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { ExpertFormData } from '../Person';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+/**
+ * Eigenschaften (Props) für die Komponente {@link AddExpertView}.
+ * Beide Callbacks sind optional, da die Komponente alternativ eine integrierte Fallback-Navigation besitzt.
+ */
 interface AddExpertViewProps {
+  /**
+   * Optionales Callback, das nach erfolgreichem Aktualisieren/Speichern der Daten gefeuert wird.
+   * @param formData - Die aktualisierten Formulardaten der Expert*in.
+   */
   onSave?: (formData: ExpertFormData) => void;
+  /**
+   * Optionales Callback, um den Bearbeitungsmodus abzubrechen.
+   */
   onCancel?: () => void;
 }
 
+/**
+ * Eine Next.js-Client-Komponente, die als Formular zum Bearbeiten oder Erstellen
+ * eines Experten-Profils dient. Wenn ein `expertId`-Query-Parameter in der URL existiert,
+ * schaltet die Ansicht in den **Bearbeitungsmodus** und lädt die bestehenden Daten vorab aus der Datenbank.
+ * * @param props - Die Props für die Komponente.
+ * @returns Ein gerendertes UI-Formular zur Expert*innen-Verwaltung.
+ */
 export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) {
+  /**
+   * Lokaler State für die Formulardaten.
+   * Wird im Bearbeitungsmodus asynchron mit den Daten aus der DB überschrieben.
+   */
   const [formData, setFormData] = useState<ExpertFormData>({
     name: '',
     prename: '',
@@ -28,11 +50,25 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     social: false,
   });
 
+  /** Next.js Router für clientseitige Weiterleitungen. */
   const router = useRouter();
+  
+  /** Holt die aktuellen Suchparameter (Query Params) aus der URL. */
   const searchParams = useSearchParams();
+  
+  /** Die aus der URL extrahierte ID der Expert*in (falls vorhanden). */
   const expertIdParam = searchParams ? searchParams.get('expertId') : null;
 
+  /**
+   * `useEffect`-Hook zur Datenbeschaffung. 
+   * Triggert einen API-Request auf `/api/users/list`, sobald eine `expertIdParam` erkannt wird,
+   * filtert den passenden Datensatz heraus und formatiert Arrays in kommagetrennte Strings für das UI.
+   */
   useEffect(() => {
+    /**
+     * Ruft die Experten-Liste ab und befüllt den Formularzustand bei einem Treffer.
+     * * @async
+     */
     const loadExpert = async () => {
       if (!expertIdParam) return;
       try {
@@ -40,6 +76,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
         const result = await res.json();
         const experts = Array.isArray(result.experts) ? result.experts : result;
         const found = experts.find((e: any) => String(e.expert_id) === String(expertIdParam));
+        
         if (found) {
           setFormData((prev) => ({
             ...prev,
@@ -51,6 +88,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
             scientificAreas: Array.isArray(found.scientificAreas) ? found.scientificAreas.join(', ') : (found.scientificAreas || ''),
             email: found.email || '',
             phone: found.phone || '',
+            // Formatiert das Datum sauber in das Format YYYY-MM-DD für HTML5-Date-Inputs
             last_contact: found.last_contact ? new Date(found.last_contact).toISOString().slice(0,10) : (found.last_contact || ''),
             description: found.description || '',
             expert_fields: Array.isArray(found.expert_fields) ? found.expert_fields.join(', ') : (found.expert_fields || ''),
@@ -67,6 +105,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     loadExpert();
   }, [expertIdParam]);
 
+  /**
+   * Generischer Event-Handler für Textfelder (Inputs/Textareas).
+   * Aktualisiert dynamisch den Zustand basierend auf dem `name`-Attribut des Elements.
+   * * @param e - Das Change-Event des Formularfeldes.
+   */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -75,6 +118,14 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     }));
   };
 
+  /**
+   * Sendet eine PATCH-Anfrage an `/api/users/update`, um die Änderungen an der Expert*in
+   * in der Datenbank persistent zu speichern.
+   * * @async
+   * @param expertData - Die aktuellen Formulardaten aus dem State.
+   * @returns Verspricht (Promise) das aktualisierte Datenobjekt des Servers.
+   * @throws {Error} Wenn keine `expertId` übergeben wurde oder die Server-Antwort fehlschlägt.
+   */
   const updateExpertInDB = async (expertData: ExpertFormData) => {
     try {
       if (!expertIdParam) {
@@ -115,6 +166,12 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     }
   };
 
+  /**
+   * Verarbeitet das Absenden des Formulars. Validiert minimale Pflichtfelder, 
+   * stößt das Update an und navigiert im Anschluss entweder per Callback oder Route weiter.
+   * * @async
+   * @param e - Das Formular-Submit-Event.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -139,11 +196,20 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
     }
   };
 
+  /**
+   * Bricht die Bearbeitung ab. Nutzt bevorzugt das übergebene `onCancel`-Callback,
+   * andernfalls erfolgt eine automatische Weiterleitung zurück zur Liste (`/relations`).
+   */
   const handleCancel = () => {
     if (onCancel) onCancel();
     else router.push('/relations');
   };
 
+  /**
+   * Löscht die geladene Expert*in dauerhaft aus der Datenbank via DELETE-Request auf `/api/users/delete`.
+   * Fordert vorab eine Bestätigung durch den Benutzer über ein Standard-Bestätigungsfenster (`window.confirm`).
+   * * @async
+   */
   const deleteExpertInDB = async () => {
     if (!expertIdParam) {
       alert('Expert*innen-ID fehlt. Löschung nicht möglich.');

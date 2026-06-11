@@ -4,64 +4,109 @@ import React, { useState } from 'react';
 import { Search, Rocket, Lightbulb, Users, ArrowRight, HelpCircle } from 'lucide-react';
 
 // --- TYPEN-DEFINITIONEN ---
+
+/**
+ * Repräsentiert eine städtische oder organisatorische Herausforderung (Challenge).
+ */
 interface Challenge {
+  /** Eindeutige ID der Challenge. */
   id: string;
+  /** Der Titel oder die Überschrift der Challenge. */
   title: string;
+  /** Das zuständige Amt oder die Abteilung. */
   department: string;
+  /** Der aktuelle Status der Challenge (z. B. "Aktiv", "In Vorbereitung"). */
   status: string;
 }
 
+/**
+ * Repräsentiert ein registriertes (Smart-City-)Projekt.
+ */
 interface Project {
+  /** Eindeutige ID des Projekts. */
   id: string;
+  /** Der Projekttitel. */
   title: string;
+  /** Die aktuelle Projektphase (z. B. "Test-Phase"). */
   stage: string;
+  /** Der geografische Ort oder Stadtteil des Projekts. */
   location: string;
 }
 
+/**
+ * Repräsentiert ein Profil einer Expert*in oder einer Ansprechperson.
+ */
 interface Expert {
+  /** Eindeutige ID der Expert*in. */
   id: string;
+  /** Der vollständige Name. */
   name: string;
+  /** Die fachliche Rolle oder Kernkompetenz. */
   role: string;
+  /** Eine Liste von spezifischen Fähigkeiten oder Schlagworten (Skills). */
   skills: string[];
 }
 
 // --- MOCK-DATEN (Ersetze diese später durch deine API / DB-Abfrage) ---
+
+/** Mock-Daten für Challenges zu Test- und Entwicklungszwecken. */
 const mockChallenges: Challenge[] = [
   { id: 'CH-01', title: 'CO2-neutrale Altstadt bis 2030', department: 'Umweltamt', status: 'Aktiv' },
   { id: 'CH-02', title: 'Optimierung des Radwegenetzes', department: 'Verkehrsplanung', status: 'In Vorbereitung' },
   { id: 'CH-03', title: 'Smarte Abfallkonzepte für Feste', department: 'Stadtwerke', status: 'Aktiv' },
 ];
 
+/** Mock-Daten für Projekte zu Test- und Entwicklungszwecken. */
 const mockProjects: Project[] = [
   { id: 'HD-311', title: 'Digitale Parkraumbewirtschaftung', stage: 'Test-Phase', location: 'Heidelberg-Altstadt' },
   { id: 'HD-215', title: 'Smart Lighting Bahnstadt', stage: 'Challenge-Phase', location: 'Bahnstadt' },
   { id: 'HD-102', title: 'Nachhaltige Bewässerung Neckarwiese', stage: 'Reallabor-Phase', location: 'Neuenheim' },
 ];
 
+/** Mock-Daten für Experten-Profile zu Test- und Entwicklungszwecken. */
 const mockExperts: Expert[] = [
   { id: 'EX-99', name: 'Dr. Maria Lorenz', role: 'Expertin für urbane Mobilität', skills: ['Verkehr', 'Smart City', 'KI'] },
   { id: 'EX-42', name: 'Thomas Keller', role: 'Projektentwickler IoT', skills: ['Sensorik', 'LoRaWAN', 'IT'] },
   { id: 'EX-12', name: 'Prof. Dr. Jan Schmidt', role: 'Umweltwissenschaftler', skills: ['Klima', 'Hydrologie', 'Wissenschaft'] },
 ];
 
+/**
+ * Eine Next.js-Client-Komponente, die eine globale, interaktive Suchoberfläche bereitstellt.
+ * Durchsucht parallel Challenges, Projekte und Expert*innen anhand einer einzigen
+ * Benutzereingabe (Query) in Echtzeit auf Client-Eite.
+ * * @returns Das gerenderte Suchfenster inklusive Suchergebnissen.
+ */
 export default function GlobalSearchView() {
+  /** Lokaler State für die aktuelle Suchanfrage des Benutzers. */
   const [searchQuery, setSearchQuery] = useState('');
 
   // --- FILTER-LOGIK ---
+  
+  /** Bereinigte und in Kleinbuchstaben umgewandelte Suchanfrage. */
   const query = searchQuery.toLowerCase().trim();
 
+  /** * Filtert Challenges basierend auf dem Titel oder der Abteilung.
+   * Bleibt leer, wenn keine Suchanfrage existiert.
+   */
   const filteredChallenges = query
     ? mockChallenges.filter(c => c.title.toLowerCase().includes(query) || c.department.toLowerCase().includes(query))
     : [];
 
+  /** * Filtert Projekte basierend auf dem Titel oder dem Standort.
+   * Bleibt leer, wenn keine Suchanfrage existiert.
+   */
   const filteredProjects = query
     ? mockProjects.filter(p => p.title.toLowerCase().includes(query) || p.location.toLowerCase().includes(query))
     : [];
 
+  /** * Filtert Expert*innen basierend auf dem Namen, der Rolle oder den Fähigkeiten (Skills).
+   * Bleibt leer, wenn keine Suchanfrage existiert.
+   */
   const filteredExperts = query
     ? mockExperts.filter(e => e.name.toLowerCase().includes(query) || e.role.toLowerCase().includes(query) || e.skills.some(s => s.toLowerCase().includes(query)))
     : [];
 
+  /** Gibt an, ob mindestens eine der Kategorien Suchergebnisse geliefert hat. */
   const hasResults = filteredChallenges.length > 0 || filteredProjects.length > 0 || filteredExperts.length > 0;
 
   return (

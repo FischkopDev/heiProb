@@ -10,7 +10,8 @@ import { Topbar } from "./components/Topbar";
 //Meta data for website
 export const metadata: Metadata = {
   title: "HeiProb",
-  description: "Problem- und Projektmanagement für die Smart City Heidelberg",
+  description: "Challenge- und Projektmanagement für die Smart City Heidelberg",
+  
 
 };
 

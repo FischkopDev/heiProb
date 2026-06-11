@@ -3,37 +3,77 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+/**
+ * Repräsentiert die Übersicht um Challenges hinzuzufügen. Challenges werden hier ebenfalls als
+ * ProblemItem definiert. Zusätzlich gibt es hier auch die Status-Optionen zu der jeweiligen Challenge
+ * und die entsprechende Methode zum Absenden des Formulars.
+ */
 interface ProblemItem {
+  /** Eindeutige ID der Herausforderung. */
   id: number;
+  /** Der Titel bzw. Name der Herausforderung. */
   title: string;
+  /** Die Kategorie, zu der das Problem gehört (z. B. "Technik", "Küche"). */
   category: string;
+  /** Der aktuelle Bearbeitungsstatus. */
   status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst';
+  /** Die visuelle Farbkodierung für das UI-Mapping des Status. */
   statusColor: 'amber' | 'green' | 'slate';
+  /** Eine kurze Zusammenfassung oder Beschreibung des Problems. */
   summary: string;
 }
 
+/**
+ * Verfügbare Status-Optionen für das Formular inklusive ihrer UI-Farbzuordnungen.
+ * Wird als Readonly-Array deklariert.
+ */
 const statusOptions = [
   { value: 'Ungelöst', label: 'Ungelöst', color: 'amber' },
   { value: 'In Bearbeitung', label: 'In Bearbeitung', color: 'green' },
   { value: 'Gelöst', label: 'Gelöst', color: 'slate' },
 ] as const;
 
-
-export  default function AddChallengePage() {
+/**
+ * Eine Next.js-Client-Komponente, die ein Formular zum Erstellen 
+ * einer neuen Herausforderung (Challenge) bereitstellt.
+ * * @returns Ein gerendertes React-Formularlement.
+ */
+export default function AddChallengePage() {
+  /** Next.js Router für die clientseitige Navigation nach erfolgreichem Submit. */
   const router = useRouter();
+
+  /** * Lokaler State für die Formulardaten. 
+   * Schließt `id` und `statusColor` aus, da diese serverseitig oder dynamisch berechnet werden.
+   */
   const [formState, setFormState] = useState<Omit<ProblemItem, 'id' | 'statusColor'>>({
     title: '',
     category: '',
     status: 'Ungelöst',
     summary: ''
   });
+
+  /** Status für den Ladezustand während der API-Anfrage. */
   const [isLoading, setIsLoading] = useState(false);
+
+  /** Hält Fehlermeldungen bereit, falls das Absenden des Formulars fehlschlägt. */
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Aktualisiert universell ein spezifisches Feld im Formular-State.
+   * * @param field - Der Schlüssel des Feldes im `formState`, das aktualisiert werden soll.
+   * @param value - Der neue Wert für das entsprechende Feld.
+   */
   const handleChange = (field: keyof typeof formState, value: string) => {
     setFormState((current) => ({ ...current, [field]: value }));
   };
 
+  /**
+   * Behandelt das Absenden des Formulars.
+   * Sendet die Daten via POST an die API-Route `/api/challenges/add`.
+   * Leitet bei Erfolg auf die Übersichtsseite `/challenge` weiter.
+   * * @param event - Das Formular-Event von React.
+   * @throws {Error} Wenn die API-Antwort nicht erfolgreich (ok) ist.
+   */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -67,7 +107,6 @@ export  default function AddChallengePage() {
       setIsLoading(false);
     }
   };
-
 
   return (
     <div className="space-y-8">

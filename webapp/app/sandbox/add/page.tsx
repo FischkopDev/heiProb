@@ -4,32 +4,69 @@ import React, { useEffect, useState } from 'react';
 import { PlusCircle, ArrowLeft, Calendar, FileText, MapPin, Link2, Trash2, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+/**
+ * Repräsentiert ein Mitglied innerhalb eines Projekts inklusive seiner RACI-Rolle.
+ */
 interface ProjectMember {
+  /** Eindeutige temporäre ID für das UI-Mapping (z. B. generiert über `Date.now()`). */
   id: string;
+  /** Die echte ID des Experten aus der Datenbank. */
   expertId: number;
+  /** Der Name des Experten. */
   name: string;
+  /** * Die RACI-Rolle des Mitglieds im Projekt:
+   * - `R`: Responsible (Durchführungsverantwortlich)
+   * - `A`: Accountable (Kosten-/Gesamtverantwortlich)
+   * - `C`: Consulted (Fachlich beratend)
+   * - `I`: Informed (Zu informieren)
+   */
   role: 'R' | 'A' | 'C' | 'I';
 }
 
+/**
+ * Struktur für die Auswahlliste (Dropdown) der verfügbaren Experten.
+ */
 interface ExpertOption {
+  /** Die ID des Experten. */
   id: number;
+  /** Der vollständige Name des Experten. */
   name: string;
 }
 
+/**
+ * Struktur für das State-Objekt eines neu anzulegenden Projekts.
+ */
 interface NewProject {
+  /** Der Titel des Projekts. */
   title: string;
+  /** Eine kurze Zusammenfassung oder Beschreibung des Projekts. */
   description: string;
+  /** Das Startdatum des Projekts (Format: YYYY-MM-DD). */
   startDate: string;
+  /** Das Enddatum des Projekts (Format: YYYY-MM-DD). */
   endDate: string;
+  /** Der aktuelle Projektstatus (z. B. 'Ideen-Phase'). */
   state: string;
+  /** Der geografische oder organisatorische Ort des Projekts. */
   location: string;
+  /** Optionale URL zur Projekt-Website. */
   websiteUrl: string;
+  /** Zusätzliche, detaillierte Projektinformationen. */
   details: string;
+  /** Liste der dem Projekt zugewiesenen Mitglieder. */
   members: ProjectMember[];
 }
 
+/**
+ * Eine Next.js-Client-Komponente, die eine Eingabemaske zum Erstellen neuer Projekte bietet.
+ * Ermöglicht die Pflege von Metadaten sowie die dynamische Zuordnung von Experten über ein RACI-Rollenmodell.
+ * * @returns Ein gerendertes Formular zur Projekterstellung.
+ */
 export default function AddProjectView() {
+  /** Next.js Router für die clientseitige Navigation nach erfolgreichem Speichern. */
   const router = useRouter();
+
+  /** Haupt-Formularstate für das neue Projekt. */
   const [formData, setFormData] = useState<NewProject>({
     title: '',
     description: '',
@@ -42,14 +79,33 @@ export default function AddProjectView() {
     members: [],
   });
 
+  /** Hält die aktuell im Dropdown ausgewählte Experten-ID für ein neues Mitglied. */
   const [newMemberId, setNewMemberId] = useState('');
+  
+  /** Hält die aktuell im Dropdown ausgewählte RACI-Rolle für ein neues Mitglied. */
   const [newMemberRole, setNewMemberRole] = useState<'R' | 'A' | 'C' | 'I'>('R');
+  
+  /** Liste aller verfügbaren Experten, die aus der API für das Dropdown geladen wurden. */
   const [expertOptions, setExpertOptions] = useState<ExpertOption[]>([]);
+  
+  /** Ladezustand während die Expertenliste initialisiert wird. */
   const [loadingExperts, setLoadingExperts] = useState(false);
+  
+  /** Allgemeine Fehlermeldung für Validierungs- oder API-Fehler im UI. */
   const [error, setError] = useState<string | null>(null);
+  
+  /** Status, ob das Formular aktuell an das Backend übertragen wird (verhindert Doppel-Submits). */
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  /**
+   * `useEffect`-Hook, der beim Mounten der Komponente alle existierenden Experten
+   * von der Route `/api/users/list` abruft, um das Zuweisungs-Dropdown zu befüllen.
+   */
   useEffect(() => {
+    /**
+     * Ruft die Experten ab und mappt diese auf das {@link ExpertOption}-Format.
+     * * @async
+     */
     const loadExperts = async () => {
       setLoadingExperts(true);
       try {
@@ -74,11 +130,21 @@ export default function AddProjectView() {
     loadExperts();
   }, []);
 
+  /**
+   * Generischer Event-Handler für Standard-Formularfelder (Inputs, Textareas und Selects).
+   * Aktualisiert den `formData`-State basierend auf dem HTML-Attribut `name`.
+   * * @param e - Das Change-Event des geänderten Formular-Elements.
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Fügt den aktuell ausgewählten Experten mit der definierten RACI-Rolle 
+   * der lokalen Mitgliederliste des Projekts (`formData.members`) hinzu.
+   * Führt vorab Validierungen durch.
+   */
   const handleAddMember = () => {
     if (!newMemberId) {
       setError('Bitte eine Person aus der Liste auswählen.');
@@ -103,11 +169,16 @@ export default function AddProjectView() {
       members: [...prev.members, newMember],
     }));
 
+    // Reset der temporären Auswahl-States
     setNewMemberId('');
     setNewMemberRole('R');
     setError(null);
   };
 
+  /**
+   * Entfernt ein zugewiesenes Mitglied anhand seiner temporären UI-ID aus der Projektliste.
+   * * @param memberId - Die temporäre ID (`id`) des zu entfernenden Mitglieds.
+   */
   const handleRemoveMember = (memberId: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -115,6 +186,11 @@ export default function AddProjectView() {
     }));
   };
 
+  /**
+   * Ändert die RACI-Rolle eines bereits zugewiesenen Projektmitglieds.
+   * * @param memberId - Die temporäre ID (`id`) des betroffenen Mitglieds.
+   * @param newRole - Die neu zuzuweisende RACI-Rolle (`R`, `A`, `C` oder `I`).
+   */
   const handleMemberRoleChange = (memberId: string, newRole: 'R' | 'A' | 'C' | 'I') => {
     setFormData((prev) => ({
       ...prev,
@@ -124,6 +200,13 @@ export default function AddProjectView() {
     }));
   };
 
+  /**
+   * Behandelt das Absenden des Projektformulars. Validiert den Titel, formatiert
+   * Datumsangaben in ISO-Strings, bereinigt die Payload und sendet sie per 
+   * POST-Request an die Sandbox-API `/api/sandbox/add`.
+   * * @async
+   * @param e - Das Formular-Submit-Event von React.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -135,6 +218,7 @@ export default function AddProjectView() {
       return;
     }
 
+    // Payload-Vorbereitung mit ISO-Konvertierung und Null-Fallbacks für optionale Felder
     const projectToSubmit = {
       title: formData.title,
       description: formData.description || null,

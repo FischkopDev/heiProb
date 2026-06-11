@@ -4,6 +4,13 @@
 import { Search, Plus } from "lucide-react";
 import { useRouter } from 'next/navigation';
 
+/**
+ * 
+ * Die Topbar, die auf allen Seiten sichtbar ist. Sie enthält eine Suchleiste für die schnelle Suche nach Expertisen, Problemen oder Projekten.
+ * Außerdem gibt es zwei prominente Buttons: Einen zum Hinzufügen eines neuen Problems (Challenge) und einen zum Hinzufügen eines neuen Projekts (Sandbox). 
+ * 
+ */
+
 export function Topbar() {
   const router = useRouter();
   

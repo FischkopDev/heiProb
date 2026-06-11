@@ -1,30 +1,65 @@
 'use client';
 
-import { useState, useEffect } from 'react'; // 1. useEffect importieren
-import { AlertCircle, X, Loader2, Plus } from 'lucide-react'; // Loader-Icon für besseres UX hinzugefügt
+import { useState, useEffect } from 'react';
+import { AlertCircle, X, Loader2, Plus } from 'lucide-react';
 import { useRouter } from "next/navigation";
 
+/**
+ * Die Übersicht aller Challenges im System. Diese werden mit Titel und Kategorie sowie Status aufgelistet.
+ * Mittels Verbindung zur API werden die Daten live geladen. Es gibt eine Möglichkeit die Details der 
+ * Challenges anzuschauen und damit auch diese zu verwalten.
+ */
 interface ProblemItem {
+  /** Die eindeutige ID des Problems (Primärschlüssel). */
   problem_id: number;
+  /** Der Titel oder die Überschrift des Problems. */
   title: string;
+  /** Kommagetrennte oder formatierte Tags/Schlagworte zur Verschlagwortung. */
   tags: string;
+  /** Die übergeordnete Kategorie des Problems. */
   category: string;
+  /** Der aktuelle Bearbeitungsstatus. */
   status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst';
+  /** Die dem Status zugewiesene UI-Farbe. */
   statusColor: 'amber' | 'green' | 'slate';
+  /** Eine detaillierte Beschreibung des Problems. */
   description: string;
+  /** Die Auswirkungen oder Konsequenzen, die das Problem verursacht. */
   impact: string;
+  /** Die betroffenen Personen, Abteilungen oder Stakeholder. */
   stakeholders: string;
+  /** Die nächsten geplanten Schritte zur Lösung des Problems. */
   nextSteps: string;
 }
 
+/**
+ * Eine Next.js-Client-Komponente, die eine Übersicht aller vorhandenen Probleme
+ * darstellt, Daten live von der API lädt und das Löschen sowie die Detailansicht verwaltet.
+ * * @returns Ein gerendertes UI-Element für die Problem-Verwaltung.
+ */
 export default function ProblemView() {
-  // 2. States für dynamische Daten, Ladezustand und Fehlerhandling einrichten
+  /** Liste aller aus der Datenbank geladenen Probleme. */
   const [problems, setProblems] = useState<ProblemItem[]>([]);
+  
+  /** Das aktuell in der Detailansicht oder im Fokus ausgewählte Problem. `null`, wenn keines ausgewählt ist. */
   const [selectedProblem, setSelectedProblem] = useState<ProblemItem | null>(null);
+  
+  /** Gibt an, ob die Daten aktuell von der API geladen werden (für Lade-Spinner). */
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  
+  /** Hält Fehlermeldungen bei fehlgeschlagenen API-Anfragen (Laden oder Löschen). */
   const [error, setError] = useState<string | null>(null);
+  
+  /** Next.js Router für eventuelle clientseitige Navigationen. */
   const router = useRouter();
 
+  /**
+   * Löscht die aktuell ausgewählte Challenge permanent aus der Datenbank.
+   * Fragt den Nutzer vorab via `window.confirm` um Bestätigung. Bei Erfolg
+   * wird die Challenge auch aus dem lokalen State entfernt.
+   * * @async
+   * @throws {Error} Wenn die API-Antwort fehlschlägt oder ein Serverfehler auftritt.
+   */
   const deleteChallengeInDB = async () => {
     if (!selectedProblem) return;
 
@@ -45,6 +80,7 @@ export default function ProblemView() {
         throw new Error(result?.error || 'Löschen fehlgeschlagen');
       }
 
+      // Zustand lokal aktualisieren: Gelöschtes Element filtern
       setProblems((prev) => prev.filter((problem) => problem.problem_id !== selectedProblem.problem_id));
       setSelectedProblem(null);
     } catch (err: any) {
@@ -52,12 +88,18 @@ export default function ProblemView() {
     }
   };
 
-  // 3. Funktion für den GET-Request definieren
+  /**
+   * `useEffect`-Hook, der beim Mounten der Komponente die Liste der Challenges
+   * asynchron von der API-Route `/api/challenges/list` abruft.
+   */
   useEffect(() => {
+    /**
+     * Führt den GET-Request aus, validiert das Antwortformat und befüllt den State.
+     * * @async
+     */
     async function fetchProblems() {
       try {
         setIsLoading(true);
-        // Pfad an deine tatsächliche API-Route anpassen (z.B. /api/challenges/list)
         const response = await fetch('/api/challenges/list');
         
         if (!response.ok) {
@@ -66,7 +108,7 @@ export default function ProblemView() {
 
         const data = await response.json();
         
-        // (z.B. wenn die DB "description" liefert, deine UI aber "summary" erwartet)
+        // Validierung des erwarteten API-Formats ({ success: boolean, challenges: ProblemItem[] })
         if (data.success && Array.isArray(data.challenges)) {
           setProblems(data.challenges);
         } else {

@@ -4,31 +4,64 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { UserPlus } from 'lucide-react';
 
+/**
+ * Repräsentiert ein zugewiesenes Projektmitglied inklusive seiner zugewiesenen RACI-Rolle.
+ */
 interface ProjectMember {
+  /** Die eindeutige ID des Experten (als String für das UI-Mapping). */
   id: string;
+  /** Der vollständige Name des Experten. */
   name: string;
+  /** * Die RACI-Rolle des Mitglieds:
+   * - `R`: Responsible (Durchführungsverantwortlich)
+   * - `A`: Accountable (Kosten-/Gesamtverantwortlich)
+   * - `C`: Consulted (Fachlich beratend)
+   * - `I`: Informed (Zu informieren)
+   */
   role: 'R' | 'A' | 'C' | 'I';
 }
 
+/**
+ * Struktur für die Optionen innerhalb des Dropdowns zur Expertenauswahl.
+ */
 interface ExpertOption {
+  /** Die ID des Experten als String. */
   id: string;
+  /** Der Name des Experten. */
   name: string;
 }
 
+/**
+ * Struktur für die vollständigen Details eines Projekts.
+ */
 interface ProjectDetails {
+  /** Eindeutige ID des Projekts. */
   id: string;
+  /** Der Projekttitel. */
   title: string;
+  /** Kurze Zusammenfassung oder Beschreibung des Projekts. */
   description: string;
+  /** Startdatum des Projekts (Format: YYYY-MM-DD). */
   startDate: string;
+  /** Enddatum des Projekts (Format: YYYY-MM-DD). */
   endDate: string;
+  /** Der aktuelle Projektstatus (z. B. 'Ideen-Phase'). */
   state: string;
+  /** Alternativer oder datenbankspezifischer Projektstatus. */
   project_state: string;
+  /** Geografischer oder organisatorischer Standort des Projekts. */
   location: string;
+  /** Optionale Projekt-Website-URL. */
   websiteUrl: string;
+  /** Zusätzliche, detaillierte Projektbeschreibungen oder Notizen. */
   details: string;
+  /** Liste aller dem Projekt zugewiesenen Experten. */
   experts: ProjectMember[];
 }
 
+/**
+ * Ein leeres Standard-Objekt zur Initialisierung des {@link ProjectDetails}-States.
+ */
 const emptyProject: ProjectDetails = {
   id: '',
   title: '',
@@ -43,21 +76,43 @@ const emptyProject: ProjectDetails = {
   experts: [],
 };
 
+/**
+ * Eine Next.js-Client-Komponente, die eine Detailansicht zur Bearbeitung eines bestehenden Projekts bereitstellt.
+ * Lädt Projektdaten sowie die globale Expertenliste parallel, erlaubt die Modifikation aller Felder
+ * inklusive RACI-Teamzuweisungen (mit Duplikatsprüfung) und speichert die Änderungen via PATCH-Request.
+ * * @returns Die gerenderte Detail- und Bearbeitungsseite des Projekts.
+ */
 export default function ProjectDetailsPage() {
+  /** Next.js Suchparameter, um die Projekt-ID aus der URL (`?id=...`) zu extrahieren. */
   const searchParams = useSearchParams();
+  /** Next.js Router für die Navigation nach erfolgreichem Update. */
   const router = useRouter();
+  /** Die aus der URL extrahierte Projekt-ID. */
   const projectId = searchParams.get('id');
 
+  /** Lokaler Hauptstate für die Projektdetails. */
   const [project, setProject] = useState<ProjectDetails>(emptyProject);
+  /** Globaler Ladezustand für die Initialisierung der Daten. */
   const [loading, setLoading] = useState(true);
+  /** Hält globale Fehlermeldungen bei fehlgeschlagenen API-Abfragen oder Updates. */
   const [error, setError] = useState<string | null>(null);
+  /** Status, ob das Formular aktuell an das Backend übertragen wird (Submit-Schutz). */
   const [isSaving, setIsSaving] = useState(false);
+  /** Liste aller verfügbaren Experten für das Zuweisungs-Dropdown. */
   const [expertOptions, setExpertOptions] = useState<ExpertOption[]>([]);
+  /** Ladezustand speziell für den asynchronen Abruf der Expertenliste. */
   const [loadingExperts, setLoadingExperts] = useState(false);
+  /** Die aktuell im Dropdown ausgewählte Experten-ID für ein neues Teammitglied. */
   const [newMemberId, setNewMemberId] = useState('');
+  /** Die aktuell ausgewählte RACI-Rolle für das neue Teammitglied. */
   const [newMemberRole, setNewMemberRole] = useState<'R' | 'A' | 'C' | 'I'>('R');
+  /** Spezifischer UI-Validierungsfehler für die Teammitglied-Zuweisung. */
   const [memberError, setMemberError] = useState<string | null>(null);
 
+  /**
+   * `useEffect`-Hook, der bei vorhandener `projectId` die Projektdetails und die
+   * Expertenliste parallel über `Promise.all` abfragt, filtert und für das Formular aufbereitet.
+   */
   useEffect(() => {
     if (!projectId) {
       setError('Projekt-ID fehlt.');
@@ -65,6 +120,11 @@ export default function ProjectDetailsPage() {
       return;
     }
 
+    /**
+     * Lädt Projektdaten und Expertenliste parallel aus den API-Routen.
+     * Formatiert ISO-Zeitstempel in `YYYY-MM-DD` für HTML5-Date-Inputs um.
+     * * @async
+     */
     const loadData = async () => {
       try {
         setLoadingExperts(true);
@@ -106,6 +166,7 @@ export default function ProjectDetailsPage() {
           id: String(rawProject.id),
           title: rawProject.title || '',
           description: rawProject.description || '',
+          // ISO-String abschneiden, um das Datumsfeld im Browser korrekt zu befüllen
           startDate: rawProject.startDate ? new Date(rawProject.startDate).toISOString().slice(0, 10) : '',
           endDate: rawProject.endDate ? new Date(rawProject.endDate).toISOString().slice(0, 10) : '',
           state: rawProject.state || rawProject.project_state || '',
@@ -132,10 +193,19 @@ export default function ProjectDetailsPage() {
     loadData();
   }, [projectId]);
 
+  /**
+   * Generischer Change-Handler für Textfelder, Datumsfelder oder Auswahllisten des Projekts.
+   * * @param field - Der Schlüssel der Eigenschaft im `project`-Zustand.
+   * @param value - Der neue Wert für dieses Feld.
+   */
   const handleChange = (field: keyof ProjectDetails, value: string) => {
     setProject((prev) => ({ ...prev, [field]: value }));
   };
 
+  /**
+   * Fügt den aktuell ausgewählten Experten dem `project.experts`-State hinzu.
+   * Prüft vorab, ob eine Person selektiert wurde und ob sich diese bereits im Team befindet.
+   */
   const handleAddMember = () => {
     setMemberError(null);
     if (!newMemberId) {
@@ -149,6 +219,7 @@ export default function ProjectDetailsPage() {
       return;
     }
 
+    // Duplikatsprüfung
     if (project.experts.some((member) => member.id === selectedExpert.id)) {
       setMemberError('Diese Person ist bereits im Projektteam.');
       return;
@@ -161,10 +232,16 @@ export default function ProjectDetailsPage() {
         { id: selectedExpert.id, name: selectedExpert.name, role: newMemberRole },
       ],
     }));
+    
+    // Reset der temporären Zuweisungs-States
     setNewMemberId('');
     setNewMemberRole('R');
   };
 
+  /**
+   * Entfernt ein zugewiesenes Mitglied basierend auf seiner ID aus der Teamliste.
+   * * @param memberId - Die ID des zu entfernenden Experten.
+   */
   const handleRemoveMember = (memberId: string) => {
     setProject((prev) => ({
       ...prev,
@@ -172,6 +249,13 @@ export default function ProjectDetailsPage() {
     }));
   };
 
+  /**
+   * Behandelt das Absenden des Formulars. Mappt die Formulardaten in das geforderte 
+   * API-Format (u. a. Konvertierung von IDs zurück in Zahlen) und führt einen 
+   * PATCH-Request auf `/api/sandbox/update` aus.
+   * * @async
+   * @param event - Das Formular-Submit-Event von React.
+   */
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);

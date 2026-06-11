@@ -3,6 +3,10 @@
 
 import { Sparkles, AlertCircle, MessageSquare } from "lucide-react";
 
+/**
+ * Die seitliche Ansicht auf dem der KI-Agent platziert wird. Hier sollen die Befehle an den Agent übernommen werden. 
+ * 
+ */
 export function Agentbar() {
   return (
     <aside className="w-80 bg-white border-l border-slate-200 flex flex-col shadow-xl">

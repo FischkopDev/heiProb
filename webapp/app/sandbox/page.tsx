@@ -4,22 +4,56 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle2 } from 'lucide-react';
 
+/**
+ * Bildet die Übersicht für alle eingetragenen Projekte in der Sandbox-City Heidelberg ab. Diese Komponente lädt die Projektdaten
+ * asynchron von der API-Route `/api/sandbox/list` und transformiert sie in ein einheitliches Format für die Anzeige. 
+ * Sie zeigt eine tabellarische Übersicht mit den wichtigsten Informationen zu jedem Projekt, einschließlich Titel, 
+ * Standort, Status, beteiligten Akteuren und einem Teaser für weitere Details.
+ */
 interface Project {
+  /** Eindeutige ID des Projekts als String für das React-Key-Mapping. */
   id: string;
+  /** Der Titel des Projekts. */
   title: string;
+  /** Die Themen oder der Standort des Projekts. */
   topics: string;
+  /** Die aktuelle Phase bzw. der Status des Projekts (z. B. "Ideen-Phase"). */
   stage: string;
+  /** Eine Liste der Namen aller beteiligten Akteure/Experten. */
   actors: string[];
+  /** Ein dynamischer UI-Anzeigewert (Teaser-Text, URL oder formatiertes Update-Datum). */
   value: string;
 }
 
+/**
+ * Eine Next.js-Client-Komponente, die eine tabellarische Übersicht oder Liste 
+ * aller Sandbox-Projekte aus der Datenbank anzeigt. Sie lädt die Projektdaten 
+ * asynchron und bereitet diese direkt für die Anzeige auf.
+ * * @returns Die gerenderte Übersicht der Sandbox-Projekte.
+ */
 export default function SandboxProjectView() {
+  /** Next.js Router für eventuelle clientseitige Navigationen (z. B. zur Detailseite). */
   const router = useRouter();
+  
+  /** Lokaler State zur Speicherung der geladenen und transformierten Projekte. */
   const [projects, setProjects] = useState<Project[]>([]);
+  
+  /** Globaler Ladezustand während des API-Abrufs. */
   const [loading, setLoading] = useState(true);
+  
+  /** Hält Fehlermeldungen bereit, falls der Abruf der Projektdaten fehlschlägt. */
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * `useEffect`-Hook, der beim Mounten der Komponente alle Sandbox-Projekte
+   * per GET-Request von der API-Route `/api/sandbox/list` lädt.
+   */
   useEffect(() => {
+    /**
+     * Holt die Rohdaten von der API und transformiert sie in das interne {@link Project}-Format.
+     * * @async
+     * @throws {Error} Wenn die Server-Antwort nicht erfolgreich (ok) ist.
+     */
     const fetchProjects = async () => {
       try {
         const response = await fetch('/api/sandbox/list', {
@@ -35,15 +69,20 @@ export default function SandboxProjectView() {
           throw new Error(data?.error || 'Fehler beim Laden der Projekte.');
         }
 
+        // Transformation der API-Rohdaten in die Project-Schnittstelle
         const loadedProjects: Project[] = Array.isArray(data.projects)
           ? data.projects.map((project: any) => ({
               id: String(project.id),
               title: project.title || 'Unbenanntes Projekt',
+              // Mappt den Standort (location) auf die UI-Eigenschaft 'topics'
               topics: project.location || 'Unbekannter Standort',
+              // Fallback-Kette für den Projektstatus
               stage: project.state || project.project_state || 'Unbekannter Status',
+              // Extrahiert ausschließlich die Namen der Experten in ein String-Array
               actors: Array.isArray(project.experts)
                 ? project.experts.map((expert: any) => expert.name)
                 : [],
+              // Priorisiertes Mapping für das 'value'-Feld (Details-Teaser -> URL -> Datum)
               value: project.details
                 ? `${String(project.details).slice(0, 28)}…`
                 : project.websiteUrl
