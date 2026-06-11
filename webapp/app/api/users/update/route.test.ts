@@ -53,9 +53,12 @@ describe("PATCH /api/users/update (Update Expert)", () => {
     expect(data.success).toBe(true);
     expect(data.data.name).toBe("Mustermann");
     
-    // Prüfen, ob die SQL-Query korrekt aufgerufen wurde
-    expect(pool.query).toHaveBeenCalledWith(
-      expect.stringContaining('UPDATE "Expert" SET'),
+    // Prüfen, dass pool.query mind. 2x aufgerufen wurde (Organization + Update)
+    expect(pool.query).toHaveBeenCalledTimes(2);
+    // Zweiter Call sollte das UPDATE Statement sein
+    expect(pool.query).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining('UPDATE "Expert"'),
       expect.arrayContaining(["Mustermann", 1])
     );
   });
@@ -80,6 +83,7 @@ describe("PATCH /api/users/update (Update Expert)", () => {
   });
 
   it("sollte 500 zurückgeben bei einem Datenbankfehler", async () => {
+    (pool.query as any).mockReset();
     (pool.query as any).mockRejectedValue(new Error("DB Error"));
 
     const req = new Request("http://localhost/api/users/update", {
