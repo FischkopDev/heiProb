@@ -1,0 +1,91 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../generated/client"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Expert {
+  expert_id               Int               @id @default(autoincrement())
+  name                    String
+  prename                 String
+  title                   String?
+  email                   String?
+  number                  String?
+  description             String?
+  location                String?
+  last_contact            DateTime      @default(now())
+  economic                Boolean       @default(false)
+  science                 Boolean       @default(false)
+  social                  Boolean       @default(false)
+  
+  primary_organization_id Int
+  organization            Organization      @relation(fields: [primary_organization_id], references: [organization_id])
+  
+  expertFields            ExpertField[]
+  projects                ProjectRelation[]
+}
+
+model Organization {
+  organization_id Int      @id @default(autoincrement())
+  name            String
+  location        String?
+  field           String?
+  description     String?
+  experts         Expert[]
+}
+
+model ExpertField {
+  id          Int     @id @default(autoincrement())
+  expert_id   Int
+  expert      Expert  @relation(fields: [expert_id], references: [expert_id])
+  field       String
+}
+
+model Project {
+  id          Int               @id @default(autoincrement())
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  state       String?
+  lastUpdate  DateTime          @default(now())
+  location    String?
+  project_state String?
+  websiteUrl  String?
+  details     String?
+  experts     ProjectRelation[]
+}
+
+model ProjectRelation {
+  expert_id  Int
+  problem_id Int?
+  project_id Int
+  role        String
+
+  expert  Expert   @relation(fields: [expert_id], references: [expert_id])
+  problem Problem? @relation(fields: [problem_id], references: [problem_id])
+  project Project  @relation(fields: [project_id], references: [id]) // Note: Project model uses 'id', not 'project_id'
+
+  @@id([project_id, expert_id])
+}
+
+model Problem {
+  problem_id      Int               @id @default(autoincrement())
+  title           String
+  description     String?
+  category        String?
+  state           String?
+  reported_by     Int?
+
+  projectRelations ProjectRelation[]
+}
+
+model Test {
+  title   String @id
+  content String
+}

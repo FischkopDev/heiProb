@@ -4,14 +4,15 @@ In dieser Datei wird die Datenbank beschrieben. Eine ausführlichere Beschreibun
 RE:
 
 User(user_id, name, prename, title, email, description, network)
-user_organization(#user_id, city, organization, role)               | Firmen/Forschungseinrichtungen bei denen die Person beschäftigt ist
+user_job(#user_id, city, role, #organization_id)               | Firmen/Forschungseinrichtungen bei denen die Person beschäftigt ist
 user_field(#user_id, field, description)                            | ermöglicht mehrere Schwerpunkte
 user_connection(#user_id, economic, science, social)                | Design der Verbindung zwischen Wissenschaft und Wirtschaft
 
 last_contact(#user_id, time_stamp, description)
 
+organizations(organization_id, name, location, field, description)
+
 projects(project_id, title)                                                                             | Projekt mit Statusabfrage (Sandboxstatus: Test in HD, Challenge, ...)
-project_relations(#project_id, #user_id, role)
-project_details(#project_id, description, starte_date, end_date, state, last_update, website_url, ...)
+project_relations(#project_id, #user_id, #problem_id, role)
 
 problems(problem_id, #user_id, title, description, ...)
