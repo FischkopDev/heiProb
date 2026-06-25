@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="Kq4s-x4Eq6IE3SLnWtfk">
+    <mxGraphModel dx="1414" dy="723" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="4wV5Firoybi4YP7FVAcI-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="460" width="500" x="150" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-20" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="4wV5Firoybi4YP7FVAcI-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-4" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Expert*innen verwalten" vertex="1">
+          <mxGeometry height="60" width="150" x="440" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-21" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="4wV5Firoybi4YP7FVAcI-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Challenges verwalten" vertex="1">
+          <mxGeometry height="60" width="120" x="470" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-6" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Projekte einreichen" vertex="1">
+          <mxGeometry height="50" width="130" x="330" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-7" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Expert*innen Ansicht" vertex="1">
+          <mxGeometry height="60" width="130" x="220" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-8" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Challenges einsehen" vertex="1">
+          <mxGeometry height="50" width="120" x="180" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-9" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="&lt;div&gt;Projektansicht einsehen&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="120" x="260" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-11" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="4wV5Firoybi4YP7FVAcI-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-12" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="4wV5Firoybi4YP7FVAcI-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-14" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="4wV5Firoybi4YP7FVAcI-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-10" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="&lt;div&gt;Personen aus&amp;nbsp;&lt;/div&gt;&lt;div&gt;Wirtschaft,&amp;nbsp;&lt;/div&gt;&lt;div&gt;Verwaltung, Forschung&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="30" x="50" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-22" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="4wV5Firoybi4YP7FVAcI-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-13" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Projekte bearbeiten" vertex="1">
+          <mxGeometry height="40" width="130" x="470" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-16" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="4wV5Firoybi4YP7FVAcI-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-19" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="4wV5Firoybi4YP7FVAcI-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Innovation-Team&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="30" x="730" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-15" edge="1" parent="1" source="4wV5Firoybi4YP7FVAcI-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="4wV5Firoybi4YP7FVAcI-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Webanwendung zum Prozess der Sandbox Heidelberg&amp;nbsp;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="300" x="250" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&amp;lt;include&amp;gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="365" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-24" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&amp;lt;include&amp;gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="370" y="286" as="geometry" />
+        </mxCell>
+        <mxCell id="4wV5Firoybi4YP7FVAcI-26" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&amp;lt;include&amp;gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="410" y="369" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

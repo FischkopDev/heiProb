@@ -1,0 +1,66 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0">
+  <diagram name="Page-1" id="pW3hFb8cT1teR4pBmACt">
+    <mxGraphModel dx="1414" dy="723" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="BhO30JI2HbEnYPHOizrR-2" edge="1" parent="1" source="LH6l7kk2DnZO5M2dc4nT-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="LH6l7kk2DnZO5M2dc4nT-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-2" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;" value="Planung der Aufgabe" vertex="1">
+          <mxGeometry height="60" width="160" x="10" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="BhO30JI2HbEnYPHOizrR-1" edge="1" parent="1" source="LH6l7kk2DnZO5M2dc4nT-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LH6l7kk2DnZO5M2dc4nT-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#6c8ebf;fillColor=#dae8fc;" value="Anforderungen formulieren" vertex="1">
+          <mxGeometry height="60" width="120" x="222" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="BhO30JI2HbEnYPHOizrR-3" edge="1" parent="1" source="LH6l7kk2DnZO5M2dc4nT-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LH6l7kk2DnZO5M2dc4nT-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-5" parent="1" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#d6b656;fillColor=#fff2cc;" value="&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Ergeben sich&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;weitere&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Aufgaben?&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="105" x="396" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Nein" vertex="1">
+          <mxGeometry height="30" width="60" x="490" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="BhO30JI2HbEnYPHOizrR-4" edge="1" parent="1" source="LH6l7kk2DnZO5M2dc4nT-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="LH6l7kk2DnZO5M2dc4nT-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#6c8ebf;fillColor=#dae8fc;" value="&lt;div&gt;Aufteilung in Teilprobleme&amp;nbsp;&lt;/div&gt;&lt;div&gt;(Umfang 8-16Std)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="550" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Ja" vertex="1">
+          <mxGeometry height="30" width="60" x="395" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="BhO30JI2HbEnYPHOizrR-7" edge="1" parent="1" source="LH6l7kk2DnZO5M2dc4nT-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="LH6l7kk2DnZO5M2dc4nT-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BhO30JI2HbEnYPHOizrR-8" edge="1" parent="1" source="LH6l7kk2DnZO5M2dc4nT-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="LH6l7kk2DnZO5M2dc4nT-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#6c8ebf;fillColor=#dae8fc;" value="Testfälle ausarbeiten" vertex="1">
+          <mxGeometry height="60" width="120" x="550" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#6c8ebf;fillColor=#dae8fc;" value="Implementierung der Testfälle sowie der Funktionalitäten" vertex="1">
+          <mxGeometry height="60" width="120" x="222" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="LH6l7kk2DnZO5M2dc4nT-17" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;strokeColor=#9673a6;fillColor=#e1d5e7;" value="Dokumentierung" vertex="1">
+          <mxGeometry height="50" width="125" x="27.5" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="BhO30JI2HbEnYPHOizrR-5" edge="1" parent="1" source="LH6l7kk2DnZO5M2dc4nT-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="LH6l7kk2DnZO5M2dc4nT-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BhO30JI2HbEnYPHOizrR-6" edge="1" parent="1" source="LH6l7kk2DnZO5M2dc4nT-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="LH6l7kk2DnZO5M2dc4nT-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="449" y="60" />
+              <mxPoint x="90" y="60" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
