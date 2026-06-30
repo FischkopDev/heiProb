@@ -3,59 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { PlusCircle, ArrowLeft, Calendar, FileText, MapPin, Link2, Trash2, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ProjectMember, ExpertOption, NewProject } from '@/lib/types';
 
 /**
  * Repräsentiert ein Mitglied innerhalb eines Projekts inklusive seiner RACI-Rolle.
  */
-interface ProjectMember {
-  /** Eindeutige temporäre ID für das UI-Mapping (z. B. generiert über `Date.now()`). */
-  id: string;
-  /** Die echte ID des Experten aus der Datenbank. */
-  expertId: number;
-  /** Der Name des Experten. */
-  name: string;
-  /** * Die RACI-Rolle des Mitglieds im Projekt:
-   * - `R`: Responsible (Durchführungsverantwortlich)
-   * - `A`: Accountable (Kosten-/Gesamtverantwortlich)
-   * - `C`: Consulted (Fachlich beratend)
-   * - `I`: Informed (Zu informieren)
-   */
-  role: 'R' | 'A' | 'C' | 'I';
-}
-
-/**
- * Struktur für die Auswahlliste (Dropdown) der verfügbaren Experten.
- */
-interface ExpertOption {
-  /** Die ID des Experten. */
-  id: number;
-  /** Der vollständige Name des Experten. */
-  name: string;
-}
-
-/**
- * Struktur für das State-Objekt eines neu anzulegenden Projekts.
- */
-interface NewProject {
-  /** Der Titel des Projekts. */
-  title: string;
-  /** Eine kurze Zusammenfassung oder Beschreibung des Projekts. */
-  description: string;
-  /** Das Startdatum des Projekts (Format: YYYY-MM-DD). */
-  startDate: string;
-  /** Das Enddatum des Projekts (Format: YYYY-MM-DD). */
-  endDate: string;
-  /** Der aktuelle Projektstatus (z. B. 'Ideen-Phase'). */
-  state: string;
-  /** Der geografische oder organisatorische Ort des Projekts. */
-  location: string;
-  /** Optionale URL zur Projekt-Website. */
-  websiteUrl: string;
-  /** Zusätzliche, detaillierte Projektinformationen. */
-  details: string;
-  /** Liste der dem Projekt zugewiesenen Mitglieder. */
-  members: ProjectMember[];
-}
 
 /**
  * Eine Next.js-Client-Komponente, die eine Eingabemaske zum Erstellen neuer Projekte bietet.

@@ -15,5 +15,5 @@
     "**/generated/**",
     ".next/**"
   ],
-  //"plugin": ["typedoc-plugin-markdown"]
+  "plugin": ["typedoc-plugin-mermaid"]
 }

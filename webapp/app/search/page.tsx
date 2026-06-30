@@ -2,50 +2,9 @@
 
 import React, { useState } from 'react';
 import { Search, Rocket, Lightbulb, Users, ArrowRight, HelpCircle } from 'lucide-react';
+import { Challenge, Project, Expert } from '@/lib/types';
 
 // --- TYPEN-DEFINITIONEN ---
-
-/**
- * Repräsentiert eine städtische oder organisatorische Herausforderung (Challenge).
- */
-interface Challenge {
-  /** Eindeutige ID der Challenge. */
-  id: string;
-  /** Der Titel oder die Überschrift der Challenge. */
-  title: string;
-  /** Das zuständige Amt oder die Abteilung. */
-  department: string;
-  /** Der aktuelle Status der Challenge (z. B. "Aktiv", "In Vorbereitung"). */
-  status: string;
-}
-
-/**
- * Repräsentiert ein registriertes (Smart-City-)Projekt.
- */
-interface Project {
-  /** Eindeutige ID des Projekts. */
-  id: string;
-  /** Der Projekttitel. */
-  title: string;
-  /** Die aktuelle Projektphase (z. B. "Test-Phase"). */
-  stage: string;
-  /** Der geografische Ort oder Stadtteil des Projekts. */
-  location: string;
-}
-
-/**
- * Repräsentiert ein Profil einer Expert*in oder einer Ansprechperson.
- */
-interface Expert {
-  /** Eindeutige ID der Expert*in. */
-  id: string;
-  /** Der vollständige Name. */
-  name: string;
-  /** Die fachliche Rolle oder Kernkompetenz. */
-  role: string;
-  /** Eine Liste von spezifischen Fähigkeiten oder Schlagworten (Skills). */
-  skills: string[];
-}
 
 // --- MOCK-DATEN (Ersetze diese später durch deine API / DB-Abfrage) ---
 
@@ -96,7 +55,7 @@ export default function GlobalSearchView() {
    * Bleibt leer, wenn keine Suchanfrage existiert.
    */
   const filteredProjects = query
-    ? mockProjects.filter(p => p.title.toLowerCase().includes(query) || p.location.toLowerCase().includes(query))
+    ? mockProjects.filter(p => p.title.toLowerCase().includes(query) || p.location?.toLowerCase().includes(query))
     : [];
 
   /** * Filtert Expert*innen basierend auf dem Namen, der Rolle oder den Fähigkeiten (Skills).

@@ -2,24 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { ExpertFormData } from '../Person';
+import { ExpertFormData, AddExpertViewProps } from '@/lib/types';
 import { useSearchParams, useRouter } from 'next/navigation';
-
-/**
- * Eigenschaften (Props) für die Komponente {@link AddExpertView}.
- * Beide Callbacks sind optional, da die Komponente alternativ eine integrierte Fallback-Navigation besitzt.
- */
-interface AddExpertViewProps {
-  /**
-   * Optionales Callback, das nach erfolgreichem Aktualisieren/Speichern der Daten gefeuert wird.
-   * @param formData - Die aktualisierten Formulardaten der Expert*in.
-   */
-  onSave?: (formData: ExpertFormData) => void;
-  /**
-   * Optionales Callback, um den Bearbeitungsmodus abzubrechen.
-   */
-  onCancel?: () => void;
-}
 
 /**
  * Eine Next.js-Client-Komponente, die als Formular zum Bearbeiten oder Erstellen

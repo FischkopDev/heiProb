@@ -3,34 +3,13 @@
 import { useState, useEffect } from 'react';
 import { AlertCircle, X, Loader2, Plus } from 'lucide-react';
 import { useRouter } from "next/navigation";
+import { ProblemItem } from '@/lib/types';
 
 /**
  * Die Übersicht aller Challenges im System. Diese werden mit Titel und Kategorie sowie Status aufgelistet.
  * Mittels Verbindung zur API werden die Daten live geladen. Es gibt eine Möglichkeit die Details der 
  * Challenges anzuschauen und damit auch diese zu verwalten.
  */
-interface ProblemItem {
-  /** Die eindeutige ID des Problems (Primärschlüssel). */
-  problem_id: number;
-  /** Der Titel oder die Überschrift des Problems. */
-  title: string;
-  /** Kommagetrennte oder formatierte Tags/Schlagworte zur Verschlagwortung. */
-  tags: string;
-  /** Die übergeordnete Kategorie des Problems. */
-  category: string;
-  /** Der aktuelle Bearbeitungsstatus. */
-  status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst';
-  /** Die dem Status zugewiesene UI-Farbe. */
-  statusColor: 'amber' | 'green' | 'slate';
-  /** Eine detaillierte Beschreibung des Problems. */
-  description: string;
-  /** Die Auswirkungen oder Konsequenzen, die das Problem verursacht. */
-  impact: string;
-  /** Die betroffenen Personen, Abteilungen oder Stakeholder. */
-  stakeholders: string;
-  /** Die nächsten geplanten Schritte zur Lösung des Problems. */
-  nextSteps: string;
-}
 
 /**
  * Eine Next.js-Client-Komponente, die eine Übersicht aller vorhandenen Probleme

@@ -2,26 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ProblemItem } from '@/lib/types';
 
 /**
  * Repräsentiert die Übersicht um Challenges hinzuzufügen. Challenges werden hier ebenfalls als
  * ProblemItem definiert. Zusätzlich gibt es hier auch die Status-Optionen zu der jeweiligen Challenge
  * und die entsprechende Methode zum Absenden des Formulars.
  */
-interface ProblemItem {
-  /** Eindeutige ID der Herausforderung. */
-  id: number;
-  /** Der Titel bzw. Name der Herausforderung. */
-  title: string;
-  /** Die Kategorie, zu der das Problem gehört (z. B. "Technik", "Küche"). */
-  category: string;
-  /** Der aktuelle Bearbeitungsstatus. */
-  status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst';
-  /** Die visuelle Farbkodierung für das UI-Mapping des Status. */
-  statusColor: 'amber' | 'green' | 'slate';
-  /** Eine kurze Zusammenfassung oder Beschreibung des Problems. */
-  summary: string;
-}
 
 /**
  * Verfügbare Status-Optionen für das Formular inklusive ihrer UI-Farbzuordnungen.

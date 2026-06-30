@@ -2,22 +2,7 @@
 
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { ExpertFormData } from '../Person';
-
-/**
- * Eigenschaften (Props) für die Komponente {@link AddExpertView}.
- */
-interface AddExpertViewProps {
-  /**
-   * Callback-Funktion, die aufgerufen wird, wenn die Expertendaten erfolgreich validiert und gespeichert wurden.
-   * @param formData - Die eingegebenen Formulardaten des Experten.
-   */
-  onSave: (formData: ExpertFormData) => void;
-  /**
-   * Callback-Funktion, um den Vorgang abzubrechen und zur vorherigen Ansicht zurückzukehren.
-   */
-  onCancel: () => void;
-}
+import { ExpertFormData, AddExpertViewProps } from '@/lib/types';
 
 /**
  * Eine Next.js-Client-Komponente, die ein Formular zum Erstellen und Speichern 

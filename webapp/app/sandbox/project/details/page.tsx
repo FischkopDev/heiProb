@@ -3,61 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { UserPlus } from 'lucide-react';
-
-/**
- * Repräsentiert ein zugewiesenes Projektmitglied inklusive seiner zugewiesenen RACI-Rolle.
- */
-interface ProjectMember {
-  /** Die eindeutige ID des Experten (als String für das UI-Mapping). */
-  id: string;
-  /** Der vollständige Name des Experten. */
-  name: string;
-  /** * Die RACI-Rolle des Mitglieds:
-   * - `R`: Responsible (Durchführungsverantwortlich)
-   * - `A`: Accountable (Kosten-/Gesamtverantwortlich)
-   * - `C`: Consulted (Fachlich beratend)
-   * - `I`: Informed (Zu informieren)
-   */
-  role: 'R' | 'A' | 'C' | 'I';
-}
-
-/**
- * Struktur für die Optionen innerhalb des Dropdowns zur Expertenauswahl.
- */
-interface ExpertOption {
-  /** Die ID des Experten als String. */
-  id: string;
-  /** Der Name des Experten. */
-  name: string;
-}
-
-/**
- * Struktur für die vollständigen Details eines Projekts.
- */
-interface ProjectDetails {
-  /** Eindeutige ID des Projekts. */
-  id: string;
-  /** Der Projekttitel. */
-  title: string;
-  /** Kurze Zusammenfassung oder Beschreibung des Projekts. */
-  description: string;
-  /** Startdatum des Projekts (Format: YYYY-MM-DD). */
-  startDate: string;
-  /** Enddatum des Projekts (Format: YYYY-MM-DD). */
-  endDate: string;
-  /** Der aktuelle Projektstatus (z. B. 'Ideen-Phase'). */
-  state: string;
-  /** Alternativer oder datenbankspezifischer Projektstatus. */
-  project_state: string;
-  /** Geografischer oder organisatorischer Standort des Projekts. */
-  location: string;
-  /** Optionale Projekt-Website-URL. */
-  websiteUrl: string;
-  /** Zusätzliche, detaillierte Projektbeschreibungen oder Notizen. */
-  details: string;
-  /** Liste aller dem Projekt zugewiesenen Experten. */
-  experts: ProjectMember[];
-}
+import { ProjectMember, ExpertOption, ProjectDetails } from '@/lib/types';
 
 /**
  * Ein leeres Standard-Objekt zur Initialisierung des {@link ProjectDetails}-States.
@@ -69,7 +15,6 @@ const emptyProject: ProjectDetails = {
   startDate: '',
   endDate: '',
   state: '',
-  project_state: '',
   location: '',
   websiteUrl: '',
   details: '',

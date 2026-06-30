@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle2 } from 'lucide-react';
+import { Project } from '@/lib/types';
 
 /**
  * Bildet die Übersicht für alle eingetragenen Projekte in der Sandbox-City Heidelberg ab. Diese Komponente lädt die Projektdaten
@@ -10,20 +11,6 @@ import { CheckCircle2 } from 'lucide-react';
  * Sie zeigt eine tabellarische Übersicht mit den wichtigsten Informationen zu jedem Projekt, einschließlich Titel, 
  * Standort, Status, beteiligten Akteuren und einem Teaser für weitere Details.
  */
-interface Project {
-  /** Eindeutige ID des Projekts als String für das React-Key-Mapping. */
-  id: string;
-  /** Der Titel des Projekts. */
-  title: string;
-  /** Die Themen oder der Standort des Projekts. */
-  topics: string;
-  /** Die aktuelle Phase bzw. der Status des Projekts (z. B. "Ideen-Phase"). */
-  stage: string;
-  /** Eine Liste der Namen aller beteiligten Akteure/Experten. */
-  actors: string[];
-  /** Ein dynamischer UI-Anzeigewert (Teaser-Text, URL oder formatiertes Update-Datum). */
-  value: string;
-}
 
 /**
  * Eine Next.js-Client-Komponente, die eine tabellarische Übersicht oder Liste 
@@ -164,7 +151,7 @@ export default function SandboxProjectView() {
                   </td>
                   <td className="p-4">
                     <div className="flex -space-x-2">
-                      {project.actors.length > 0 ? (
+                      {project.actors && project.actors.length > 0 ? (
                         project.actors.map((actor) => (
                           <div key={actor} className="w-7 h-7 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px] text-slate-700 font-bold">
                             {actor.slice(0, 3)}
