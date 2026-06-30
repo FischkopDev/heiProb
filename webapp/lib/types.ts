@@ -1,10 +1,14 @@
 /**
- * Consolidated type definitions for the application.
- * This file contains shared interfaces used across multiple components.
- */
-
-/**
  * Repräsentiert eine städtische oder organisatorische Herausforderung (Challenge).
+ * * ```mermaid
+ * classDiagram
+ * class Challenge {
+ * +string id
+ * +string title
+ * +string department
+ * +string status
+ * }
+ * ```
  */
 export interface Challenge {
   /** Eindeutige ID der Challenge. */
@@ -19,7 +23,18 @@ export interface Challenge {
 
 /**
  * Repräsentiert ein registriertes (Smart-City-)Projekt.
- * Supports both search view and sandbox view variations.
+ * * ```mermaid
+ * classDiagram
+ * class Project {
+ * +string id
+ * +string title
+ * +string stage
+ * +string topics
+ * +string location
+ * +string[] actors
+ * +string value
+ * }
+ * ```
  */
 export interface Project {
   /** Eindeutige ID des Projekts. */
@@ -40,6 +55,15 @@ export interface Project {
 
 /**
  * Repräsentiert ein Profil einer Expert*in oder einer Ansprechperson.
+ * * ```mermaid
+ * classDiagram
+ * class Expert {
+ * +string id
+ * +string name
+ * +string role
+ * +string[] skills
+ * }
+ * ```
  */
 export interface Expert {
   /** Eindeutige ID der Expert*in. */
@@ -54,7 +78,23 @@ export interface Expert {
 
 /**
  * Repräsentiert eine Herausforderung oder ein Problem im System.
- * Supports variations from both challenge listing and add views.
+ * * ```mermaid
+ * classDiagram
+ * class ProblemItem {
+ * +number id
+ * +number problem_id
+ * +string title
+ * +string tags
+ * +string category
+ * +string status
+ * +string statusColor
+ * +string description
+ * +string summary
+ * +string impact
+ * +string stakeholders
+ * +string nextSteps
+ * }
+ * ```
  */
 export interface ProblemItem {
   /** Eindeutige ID des Problems (Primärschlüssel). */
@@ -85,6 +125,15 @@ export interface ProblemItem {
 
 /**
  * Repräsentiert ein Mitglied innerhalb eines Projekts inklusive seiner RACI-Rolle.
+ * * ```mermaid
+ * classDiagram
+ * class ProjectMember {
+ * +string id
+ * +number expertId
+ * +string name
+ * +string role
+ * }
+ * ```
  */
 export interface ProjectMember {
   /** Eindeutige temporäre ID für das UI-Mapping (z. B. generiert über `Date.now()`). */
@@ -104,6 +153,13 @@ export interface ProjectMember {
 
 /**
  * Struktur für die Auswahlliste (Dropdown) der verfügbaren Experten.
+ * * ```mermaid
+ * classDiagram
+ * class ExpertOption {
+ * +id: number | string
+ * +string name
+ * }
+ * ```
  */
 export interface ExpertOption {
   /** Die ID des Experten (as number or string). */
@@ -114,6 +170,22 @@ export interface ExpertOption {
 
 /**
  * Struktur für das State-Objekt eines neu anzulegenden Projekts.
+ * * ```mermaid
+ * classDiagram
+ * direction LR
+ * NewProject "1" --* "many" ProjectMember : enthält
+ * class NewProject {
+ * +string title
+ * +string description
+ * +string startDate
+ * +string endDate
+ * +string state
+ * +string location
+ * +string websiteUrl
+ * +string details
+ * +ProjectMember[] members
+ * }
+ * ```
  */
 export interface NewProject {
   /** Der Titel des Projekts. */
@@ -138,6 +210,24 @@ export interface NewProject {
 
 /**
  * Struktur für die vollständigen Details eines Projekts.
+ * * ```mermaid
+ * classDiagram
+ * direction LR
+ * ProjectDetails "1" --* "many" ProjectMember : besitzt
+ * class ProjectDetails {
+ * +string id
+ * +string title
+ * +string description
+ * +string startDate
+ * +string endDate
+ * +string state
+ * +string project_state
+ * +string location
+ * +string websiteUrl
+ * +string details
+ * +ProjectMember[] experts
+ * }
+ * ```
  */
 export interface ProjectDetails {
   /** Eindeutige ID des Projekts. */
@@ -167,6 +257,15 @@ export interface ProjectDetails {
 /**
  * Eigenschaften (Props) für eine Komponente zum Hinzufügen oder Bearbeiten eines Experten.
  * Callbacks sind optional, da die Komponente alternativ integrierte Fallback-Navigation besitzt.
+ * * ```mermaid
+ * classDiagram
+ * direction LR
+ * AddExpertViewProps ..> ExpertFormData : nutzt
+ * class AddExpertViewProps {
+ * +onSave(formData: ExpertFormData) void
+ * +onCancel() void
+ * }
+ * ```
  */
 export interface AddExpertViewProps {
   /**
@@ -181,8 +280,26 @@ export interface AddExpertViewProps {
 }
 
 /**
- * Interface to represent the structure of an expert in the system, including all relevant fields and types.
- * Also used for form data when creating or updating experts.
+ * Formulardaten-Struktur für Expert*innen.
+ * * ```mermaid
+ * classDiagram
+ * class ExpertFormData {
+ * +string name
+ * +string prename
+ * +string title
+ * +string primary_organization
+ * +string other_organizations
+ * +string scientificAreas
+ * +string email
+ * +string phone
+ * +string last_contact
+ * +string description
+ * +string expert_fields
+ * +boolean economic
+ * +boolean science
+ * +boolean social
+ * }
+ * ```
  */
 export interface ExpertFormData {
   /** Der Nachname des Experten. */
@@ -217,6 +334,12 @@ export interface ExpertFormData {
 
 /**
  * Eigenschaften (Props) für die Komponente, die eine Netzwerk-/Beziehungsübersicht anzeigt.
+ * * ```mermaid
+ * classDiagram
+ * class ExpertenNetzwerkViewProps {
+ * +unknown key
+ * }
+ * ```
  */
 export interface ExpertenNetzwerkViewProps {
   /** Versionsinformation oder zusätzliche Kontextdaten (optional). */
@@ -224,7 +347,14 @@ export interface ExpertenNetzwerkViewProps {
 }
 
 /**
- * Organization interface exported from Person.tsx for database/form operations.
+ * Repräsentiert eine Organisation.
+ * * ```mermaid
+ * classDiagram
+ * class Organization {
+ * +number id
+ * +string name
+ * }
+ * ```
  */
 export interface Organization {
   /** Eindeutige ID der Organisation. */

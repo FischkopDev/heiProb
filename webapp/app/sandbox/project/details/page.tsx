@@ -174,7 +174,7 @@ export default function ProjectDetailsPage() {
       ...prev,
       experts: [
         ...prev.experts,
-        { id: selectedExpert.id, name: selectedExpert.name, role: newMemberRole },
+        { id: String(selectedExpert.id), name: selectedExpert.name, role: newMemberRole },
       ],
     }));
     

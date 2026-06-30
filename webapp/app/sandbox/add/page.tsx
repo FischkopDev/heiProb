@@ -111,7 +111,7 @@ export default function AddProjectView() {
 
     const newMember: ProjectMember = {
       id: Date.now().toString(),
-      expertId: selectedExpert.id,
+      expertId: typeof selectedExpert.id === 'number' ? selectedExpert.id : Number(selectedExpert.id),
       name: selectedExpert.name,
       role: newMemberRole,
     };

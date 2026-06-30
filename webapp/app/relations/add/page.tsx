@@ -117,7 +117,7 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
 
     try {
       await createUserInDB(formData);
-      onSave(formData);
+      onSave?.(formData);
     } catch (error: any) {
       alert(
         `Fehler beim Anlegen der Expert*in: ${
