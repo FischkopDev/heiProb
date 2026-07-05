@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { ExpertFormData, AddExpertViewProps } from '@/lib/types';
 
 /**
@@ -12,6 +13,8 @@ import { ExpertFormData, AddExpertViewProps } from '@/lib/types';
  * @returns Ein gerendertes UI-Formular für die Expertenerfassung.
  */
 export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) {
+  const router = useRouter();
+
   /**
    * Lokaler State für die Formulardaten der Expert*in.
    * Initialisiert mit leeren Standardwerten basierend auf dem Typ {@link ExpertFormData}.
@@ -117,7 +120,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
 
     try {
       await createUserInDB(formData);
-      onSave?.(formData);
+      if (onSave) {
+        onSave(formData);
+      } else {
+        router.push('/relations');
+      }
     } catch (error: any) {
       alert(
         `Fehler beim Anlegen der Expert*in: ${
@@ -132,7 +139,13 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
       <div className="flex items-center justify-between gap-4 mb-6">
         <button
           type="button"
-          onClick={onCancel}
+          onClick={() => {
+            if (onCancel) {
+              onCancel();
+            } else {
+              router.push('/relations');
+            }
+          }}
           className="inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 transition"
         >
           <ArrowLeft size={20} /> Zurück zum Experten-Netzwerk
@@ -308,7 +321,13 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
           <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-200">
             <button
               type="button"
-              onClick={onCancel}
+              onClick={() => {
+                if (onCancel) {
+                  onCancel();
+                } else {
+                  router.push('/relations');
+                }
+              }}
               className="w-full sm:w-auto px-4 py-2 text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50 transition font-medium"
             >
               Abbrechen
