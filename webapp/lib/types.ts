@@ -10,7 +10,7 @@
  * }
  * ```
  */
-export interface Challenge {
+export class Challenge {
   /** Eindeutige ID der Challenge. */
   id: string;
   /** Der Titel oder die Überschrift der Challenge. */
@@ -19,6 +19,13 @@ export interface Challenge {
   department: string;
   /** Der aktuelle Status der Challenge (z. B. "Aktiv", "In Vorbereitung"). */
   status: string;
+
+  constructor(id: string, title: string, department: string, status: string) {
+    this.id = id;
+    this.title = title;
+    this.department = department;
+    this.status = status;
+  }
 }
 
 /**
@@ -36,7 +43,7 @@ export interface Challenge {
  * }
  * ```
  */
-export interface Project {
+export class Project {
   /** Eindeutige ID des Projekts. */
   id: string;
   /** Der Projekttitel. */
@@ -51,6 +58,24 @@ export interface Project {
   actors?: string[];
   /** Ein dynamischer UI-Anzeigewert (Teaser-Text, URL oder formatiertes Update-Datum). */
   value?: string;
+
+  constructor(
+    id: string,
+    title: string,
+    stage?: string,
+    topics?: string,
+    location?: string,
+    actors?: string[],
+    value?: string,
+  ) {
+    this.id = id;
+    this.title = title;
+    this.stage = stage;
+    this.topics = topics;
+    this.location = location;
+    this.actors = actors;
+    this.value = value;
+  }
 }
 
 /**
@@ -65,7 +90,7 @@ export interface Project {
  * }
  * ```
  */
-export interface Expert {
+export class Expert {
   /** Eindeutige ID der Expert*in. */
   id: string;
   /** Der vollständige Name. */
@@ -74,6 +99,13 @@ export interface Expert {
   role: string;
   /** Eine Liste von spezifischen Fähigkeiten oder Schlagworten (Skills). */
   skills: string[];
+
+  constructor(id: string, name: string, role: string, skills: string[]) {
+    this.id = id;
+    this.name = name;
+    this.role = role;
+    this.skills = skills;
+  }
 }
 
 /**
@@ -96,7 +128,7 @@ export interface Expert {
  * }
  * ```
  */
-export interface ProblemItem {
+export class ProblemItem {
   /** Eindeutige ID des Problems (Primärschlüssel). */
   id?: number;
   /** Alternativer Feldname für die Problem-ID. */
@@ -121,6 +153,34 @@ export interface ProblemItem {
   stakeholders?: string;
   /** Die nächsten geplanten Schritte zur Lösung des Problems. */
   nextSteps?: string;
+
+  constructor(
+    title: string,
+    category: string,
+    status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst',
+    statusColor: 'amber' | 'green' | 'slate',
+    id?: number,
+    problem_id?: number,
+    tags?: string,
+    description?: string,
+    summary?: string,
+    impact?: string,
+    stakeholders?: string,
+    nextSteps?: string,
+  ) {
+    this.id = id;
+    this.problem_id = problem_id;
+    this.title = title;
+    this.tags = tags;
+    this.category = category;
+    this.status = status;
+    this.statusColor = statusColor;
+    this.description = description;
+    this.summary = summary;
+    this.impact = impact;
+    this.stakeholders = stakeholders;
+    this.nextSteps = nextSteps;
+  }
 }
 
 /**
@@ -135,7 +195,7 @@ export interface ProblemItem {
  * }
  * ```
  */
-export interface ProjectMember {
+export class ProjectMember {
   /** Eindeutige temporäre ID für das UI-Mapping (z. B. generiert über `Date.now()`). */
   id: string;
   /** Die echte ID des Experten aus der Datenbank (optional). */
@@ -149,6 +209,13 @@ export interface ProjectMember {
    * - `I`: Informed (Zu informieren)
    */
   role: 'R' | 'A' | 'C' | 'I';
+
+  constructor(id: string, name: string, role: 'R' | 'A' | 'C' | 'I', expertId?: number) {
+    this.id = id;
+    this.name = name;
+    this.role = role;
+    this.expertId = expertId;
+  }
 }
 
 /**
@@ -161,11 +228,16 @@ export interface ProjectMember {
  * }
  * ```
  */
-export interface ExpertOption {
+export class ExpertOption {
   /** Die ID des Experten (as number or string). */
   id: number | string;
   /** Der vollständige Name des Experten. */
   name: string;
+
+  constructor(id: number | string, name: string) {
+    this.id = id;
+    this.name = name;
+  }
 }
 
 /**
@@ -187,7 +259,7 @@ export interface ExpertOption {
  * }
  * ```
  */
-export interface NewProject {
+export class NewProject {
   /** Der Titel des Projekts. */
   title: string;
   /** Eine kurze Zusammenfassung oder Beschreibung des Projekts. */
@@ -206,6 +278,28 @@ export interface NewProject {
   details: string;
   /** Liste der dem Projekt zugewiesenen Mitglieder. */
   members: ProjectMember[];
+
+  constructor(
+    title: string,
+    description: string,
+    startDate: string,
+    endDate: string,
+    state: string,
+    location: string,
+    websiteUrl: string,
+    details: string,
+    members: ProjectMember[],
+  ) {
+    this.title = title;
+    this.description = description;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.state = state;
+    this.location = location;
+    this.websiteUrl = websiteUrl;
+    this.details = details;
+    this.members = members;
+  }
 }
 
 /**
@@ -229,7 +323,7 @@ export interface NewProject {
  * }
  * ```
  */
-export interface ProjectDetails {
+export class ProjectDetails {
   /** Eindeutige ID des Projekts. */
   id: string;
   /** Der Projekttitel. */
@@ -252,6 +346,32 @@ export interface ProjectDetails {
   details: string;
   /** Liste aller dem Projekt zugewiesenen Experten. */
   experts: ProjectMember[];
+
+  constructor(
+    id: string,
+    title: string,
+    description: string,
+    startDate: string,
+    endDate: string,
+    state: string,
+    location: string,
+    websiteUrl: string,
+    details: string,
+    experts: ProjectMember[],
+    project_state?: string,
+  ) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.state = state;
+    this.project_state = project_state;
+    this.location = location;
+    this.websiteUrl = websiteUrl;
+    this.details = details;
+    this.experts = experts;
+  }
 }
 
 /**
@@ -301,7 +421,7 @@ export interface AddExpertViewProps {
  * }
  * ```
  */
-export interface ExpertFormData {
+export class ExpertFormData {
   /** Der Nachname des Experten. */
   name: string;
   /** Der Vorname des Experten. */
@@ -330,20 +450,38 @@ export interface ExpertFormData {
   science: boolean;
   /** Indikator, ob der Experte im sozialen Bereich tätig ist. */
   social: boolean;
-}
 
-/**
- * Eigenschaften (Props) für die Komponente, die eine Netzwerk-/Beziehungsübersicht anzeigt.
- * * ```mermaid
- * classDiagram
- * class ExpertenNetzwerkViewProps {
- * +unknown key
- * }
- * ```
- */
-export interface ExpertenNetzwerkViewProps {
-  /** Versionsinformation oder zusätzliche Kontextdaten (optional). */
-  [key: string]: unknown;
+  constructor(
+    name: string,
+    prename: string,
+    title: string,
+    primary_organization: string,
+    other_organizations: string,
+    scientificAreas: string,
+    email: string,
+    phone: string,
+    description: string,
+    expert_fields: string,
+    economic: boolean,
+    science: boolean,
+    social: boolean,
+    last_contact?: string,
+  ) {
+    this.name = name;
+    this.prename = prename;
+    this.title = title;
+    this.primary_organization = primary_organization;
+    this.other_organizations = other_organizations;
+    this.scientificAreas = scientificAreas;
+    this.email = email;
+    this.phone = phone;
+    this.last_contact = last_contact;
+    this.description = description;
+    this.expert_fields = expert_fields;
+    this.economic = economic;
+    this.science = science;
+    this.social = social;
+  }
 }
 
 /**
@@ -356,9 +494,14 @@ export interface ExpertenNetzwerkViewProps {
  * }
  * ```
  */
-export interface Organization {
+export class Organization {
   /** Eindeutige ID der Organisation. */
   id: number;
   /** Der Name der Organisation. */
   name: string;
+
+  constructor(id: number, name: string) {
+    this.id = id;
+    this.name = name;
+  }
 }
