@@ -5,9 +5,42 @@ import { PlusCircle, ArrowLeft, Calendar, FileText, MapPin, Link2, Trash2, UserP
 import { useRouter } from 'next/navigation';
 import { ProjectMember, ExpertOption, NewProject } from '@/lib/types';
 
-/**
- * Repräsentiert ein Mitglied innerhalb eines Projekts inklusive seiner RACI-Rolle.
- */
+const createNewProject = (data: {
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  state: string;
+  location: string;
+  websiteUrl: string;
+  details: string;
+  members: ProjectMember[];
+}): NewProject => {
+  return new NewProject(
+    data.title,
+    data.description,
+    data.startDate,
+    data.endDate,
+    data.state,
+    data.location,
+    data.websiteUrl,
+    data.details,
+    data.members,
+  );
+};
+
+const cloneNewProject = (project: NewProject): NewProject =>
+  createNewProject({
+    title: project.title,
+    description: project.description,
+    startDate: project.startDate,
+    endDate: project.endDate,
+    state: project.state,
+    location: project.location,
+    websiteUrl: project.websiteUrl,
+    details: project.details,
+    members: project.members,
+  });
 
 /**
  * Eine Next.js-Client-Komponente, die eine Eingabemaske zum Erstellen neuer Projekte bietet.
@@ -19,17 +52,19 @@ export default function AddProjectView() {
   const router = useRouter();
 
   /** Haupt-Formularstate für das neue Projekt. */
-  const [formData, setFormData] = useState<NewProject>({
-    title: '',
-    description: '',
-    startDate: '',
-    endDate: '',
-    state: 'Ideen-Phase',
-    location: '',
-    websiteUrl: '',
-    details: '',
-    members: [],
-  });
+  const [formData, setFormData] = useState<NewProject>(() =>
+    createNewProject({
+      title: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+      state: 'Ideen-Phase',
+      location: '',
+      websiteUrl: '',
+      details: '',
+      members: [],
+    })
+  );
 
   /** Hält die aktuell im Dropdown ausgewählte Experten-ID für ein neues Mitglied. */
   const [newMemberId, setNewMemberId] = useState('');
@@ -89,7 +124,11 @@ export default function AddProjectView() {
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const next = cloneNewProject(prev);
+      (next as any)[name] = value;
+      return next;
+    });
   };
 
   /**
@@ -109,17 +148,18 @@ export default function AddProjectView() {
       return;
     }
 
-    const newMember: ProjectMember = {
-      id: Date.now().toString(),
-      expertId: typeof selectedExpert.id === 'number' ? selectedExpert.id : Number(selectedExpert.id),
-      name: selectedExpert.name,
-      role: newMemberRole,
-    };
+    const newMember = new ProjectMember(
+      Date.now().toString(),
+      selectedExpert.name,
+      newMemberRole,
+      typeof selectedExpert.id === 'number' ? selectedExpert.id : Number(selectedExpert.id),
+    );
 
-    setFormData((prev) => ({
-      ...prev,
-      members: [...prev.members, newMember],
-    }));
+    setFormData((prev) => {
+      const next = cloneNewProject(prev);
+      next.members = [...prev.members, newMember];
+      return next;
+    });
 
     // Reset der temporären Auswahl-States
     setNewMemberId('');
@@ -132,10 +172,11 @@ export default function AddProjectView() {
    * * @param memberId - Die temporäre ID (`id`) des zu entfernenden Mitglieds.
    */
   const handleRemoveMember = (memberId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      members: prev.members.filter((m) => m.id !== memberId),
-    }));
+    setFormData((prev) => {
+      const next = cloneNewProject(prev);
+      next.members = prev.members.filter((m) => m.id !== memberId);
+      return next;
+    });
   };
 
   /**
@@ -144,12 +185,13 @@ export default function AddProjectView() {
    * @param newRole - Die neu zuzuweisende RACI-Rolle (`R`, `A`, `C` oder `I`).
    */
   const handleMemberRoleChange = (memberId: string, newRole: 'R' | 'A' | 'C' | 'I') => {
-    setFormData((prev) => ({
-      ...prev,
-      members: prev.members.map((m) =>
-        m.id === memberId ? { ...m, role: newRole } : m
-      ),
-    }));
+    setFormData((prev) => {
+      const next = cloneNewProject(prev);
+      next.members = prev.members.map((m) =>
+        m.id === memberId ? new ProjectMember(m.id, m.name, newRole, m.expertId) : m
+      );
+      return next;
+    });
   };
 
   /**

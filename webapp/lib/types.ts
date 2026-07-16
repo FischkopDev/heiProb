@@ -12,19 +12,51 @@
  */
 export class Challenge {
   /** Eindeutige ID der Challenge. */
-  id: string;
+  private _id: string;
   /** Der Titel oder die Überschrift der Challenge. */
-  title: string;
+  private _title: string;
   /** Das zuständige Amt oder die Abteilung. */
-  department: string;
+  private _department: string;
   /** Der aktuelle Status der Challenge (z. B. "Aktiv", "In Vorbereitung"). */
-  status: string;
+  private _status: string;
 
   constructor(id: string, title: string, department: string, status: string) {
-    this.id = id;
-    this.title = title;
-    this.department = department;
-    this.status = status;
+    this._id = id;
+    this._title = title;
+    this._department = department;
+    this._status = status;
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  set id(value: string) {
+    this._id = value;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  set title(value: string) {
+    this._title = value;
+  }
+
+  get department(): string {
+    return this._department;
+  }
+
+  set department(value: string) {
+    this._department = value;
+  }
+
+  get status(): string {
+    return this._status;
+  }
+
+  set status(value: string) {
+    this._status = value;
   }
 }
 
@@ -45,19 +77,19 @@ export class Challenge {
  */
 export class Project {
   /** Eindeutige ID des Projekts. */
-  id: string;
+  private _id: string;
   /** Der Projekttitel. */
-  title: string;
+  private _title: string;
   /** Die aktuelle Projektphase oder Themen (z. B. "Test-Phase", "Technik"). */
-  stage?: string;
+  private _stage?: string;
   /** Alternativer Feldname für Themen oder Standort. */
-  topics?: string;
+  private _topics?: string;
   /** Der geografische Ort oder Stadtteil des Projekts. */
-  location?: string;
+  private _location?: string;
   /** Eine Liste der Namen aller beteiligten Akteure/Experten. */
-  actors?: string[];
+  private _actors?: string[];
   /** Ein dynamischer UI-Anzeigewert (Teaser-Text, URL oder formatiertes Update-Datum). */
-  value?: string;
+  private _value?: string;
 
   constructor(
     id: string,
@@ -68,13 +100,69 @@ export class Project {
     actors?: string[],
     value?: string,
   ) {
-    this.id = id;
-    this.title = title;
-    this.stage = stage;
-    this.topics = topics;
-    this.location = location;
-    this.actors = actors;
-    this.value = value;
+    this._id = id;
+    this._title = title;
+    this._stage = stage;
+    this._topics = topics;
+    this._location = location;
+    this._actors = actors;
+    this._value = value;
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  set id(value: string) {
+    this._id = value;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  set title(value: string) {
+    this._title = value;
+  }
+
+  get stage(): string | undefined {
+    return this._stage;
+  }
+
+  set stage(value: string | undefined) {
+    this._stage = value;
+  }
+
+  get topics(): string | undefined {
+    return this._topics;
+  }
+
+  set topics(value: string | undefined) {
+    this._topics = value;
+  }
+
+  get location(): string | undefined {
+    return this._location;
+  }
+
+  set location(value: string | undefined) {
+    this._location = value;
+  }
+
+  get actors(): string[] | undefined {
+    return this._actors;
+  }
+
+  set actors(value: string[] | undefined) {
+    this._actors = value;
+  }
+
+  get value(): string | undefined {
+    return this._value;
+  }
+
+  set value(value: string | undefined) {
+    this._value = value;
   }
 }
 
@@ -92,19 +180,51 @@ export class Project {
  */
 export class Expert {
   /** Eindeutige ID der Expert*in. */
-  id: string;
+  private _id: string;
   /** Der vollständige Name. */
-  name: string;
+  private _name: string;
   /** Die fachliche Rolle oder Kernkompetenz. */
-  role: string;
+  private _role: string;
   /** Eine Liste von spezifischen Fähigkeiten oder Schlagworten (Skills). */
-  skills: string[];
+  private _skills: string[];
 
   constructor(id: string, name: string, role: string, skills: string[]) {
-    this.id = id;
-    this.name = name;
-    this.role = role;
-    this.skills = skills;
+    this._id = id;
+    this._name = name;
+    this._role = role;
+    this._skills = skills;
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  set id(value: string) {
+    this._id = value;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  get role(): string {
+    return this._role;
+  }
+
+  set role(value: string) {
+    this._role = value;
+  }
+
+  get skills(): string[] {
+    return this._skills;
+  }
+
+  set skills(value: string[]) {
+    this._skills = value;
   }
 }
 
@@ -130,29 +250,29 @@ export class Expert {
  */
 export class ProblemItem {
   /** Eindeutige ID des Problems (Primärschlüssel). */
-  id?: number;
+  private _id?: number;
   /** Alternativer Feldname für die Problem-ID. */
-  problem_id?: number;
+  private _problem_id?: number;
   /** Der Titel oder die Überschrift des Problems. */
-  title: string;
+  private _title: string;
   /** Kommagetrennte oder formatierte Tags/Schlagworte zur Verschlagwortung. */
-  tags?: string;
+  private _tags?: string;
   /** Die übergeordnete Kategorie des Problems. */
-  category: string;
+  private _category: string;
   /** Der aktuelle Bearbeitungsstatus. */
-  status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst';
+  private _status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst';
   /** Die dem Status zugewiesene UI-Farbe. */
-  statusColor: 'amber' | 'green' | 'slate';
+  private _statusColor: 'amber' | 'green' | 'slate';
   /** Eine detaillierte Beschreibung des Problems oder kurze Zusammenfassung. */
-  description?: string;
+  private _description?: string;
   /** Alternativer Feldname für Beschreibung. */
-  summary?: string;
+  private _summary?: string;
   /** Die Auswirkungen oder Konsequenzen, die das Problem verursacht. */
-  impact?: string;
+  private _impact?: string;
   /** Die betroffenen Personen, Abteilungen oder Stakeholder. */
-  stakeholders?: string;
+  private _stakeholders?: string;
   /** Die nächsten geplanten Schritte zur Lösung des Problems. */
-  nextSteps?: string;
+  private _nextSteps?: string;
 
   constructor(
     title: string,
@@ -168,18 +288,114 @@ export class ProblemItem {
     stakeholders?: string,
     nextSteps?: string,
   ) {
-    this.id = id;
-    this.problem_id = problem_id;
-    this.title = title;
-    this.tags = tags;
-    this.category = category;
-    this.status = status;
-    this.statusColor = statusColor;
-    this.description = description;
-    this.summary = summary;
-    this.impact = impact;
-    this.stakeholders = stakeholders;
-    this.nextSteps = nextSteps;
+    this._id = id;
+    this._problem_id = problem_id;
+    this._title = title;
+    this._tags = tags;
+    this._category = category;
+    this._status = status;
+    this._statusColor = statusColor;
+    this._description = description;
+    this._summary = summary;
+    this._impact = impact;
+    this._stakeholders = stakeholders;
+    this._nextSteps = nextSteps;
+  }
+
+  get id(): number | undefined {
+    return this._id;
+  }
+
+  set id(value: number | undefined) {
+    this._id = value;
+  }
+
+  get problem_id(): number | undefined {
+    return this._problem_id;
+  }
+
+  set problem_id(value: number | undefined) {
+    this._problem_id = value;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  set title(value: string) {
+    this._title = value;
+  }
+
+  get tags(): string | undefined {
+    return this._tags;
+  }
+
+  set tags(value: string | undefined) {
+    this._tags = value;
+  }
+
+  get category(): string {
+    return this._category;
+  }
+
+  set category(value: string) {
+    this._category = value;
+  }
+
+  get status(): 'Ungelöst' | 'In Bearbeitung' | 'Gelöst' {
+    return this._status;
+  }
+
+  set status(value: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst') {
+    this._status = value;
+  }
+
+  get statusColor(): 'amber' | 'green' | 'slate' {
+    return this._statusColor;
+  }
+
+  set statusColor(value: 'amber' | 'green' | 'slate') {
+    this._statusColor = value;
+  }
+
+  get description(): string | undefined {
+    return this._description;
+  }
+
+  set description(value: string | undefined) {
+    this._description = value;
+  }
+
+  get summary(): string | undefined {
+    return this._summary;
+  }
+
+  set summary(value: string | undefined) {
+    this._summary = value;
+  }
+
+  get impact(): string | undefined {
+    return this._impact;
+  }
+
+  set impact(value: string | undefined) {
+    this._impact = value;
+  }
+
+  get stakeholders(): string | undefined {
+    return this._stakeholders;
+  }
+
+  set stakeholders(value: string | undefined) {
+    this._stakeholders = value;
+  }
+
+  get nextSteps(): string | undefined {
+    return this._nextSteps;
+  }
+
+  set nextSteps(value: string | undefined) {
+    this._nextSteps = value;
   }
 }
 
@@ -197,24 +413,56 @@ export class ProblemItem {
  */
 export class ProjectMember {
   /** Eindeutige temporäre ID für das UI-Mapping (z. B. generiert über `Date.now()`). */
-  id: string;
+  private _id: string;
   /** Die echte ID des Experten aus der Datenbank (optional). */
-  expertId?: number;
+  private _expertId?: number;
   /** Der Name des Experten. */
-  name: string;
+  private _name: string;
   /** Die RACI-Rolle des Mitglieds im Projekt:
    * - `R`: Responsible (Durchführungsverantwortlich)
    * - `A`: Accountable (Kosten-/Gesamtverantwortlich)
    * - `C`: Consulted (Fachlich beratend)
    * - `I`: Informed (Zu informieren)
    */
-  role: 'R' | 'A' | 'C' | 'I';
+  private _role: 'R' | 'A' | 'C' | 'I';
 
   constructor(id: string, name: string, role: 'R' | 'A' | 'C' | 'I', expertId?: number) {
-    this.id = id;
-    this.name = name;
-    this.role = role;
-    this.expertId = expertId;
+    this._id = id;
+    this._name = name;
+    this._role = role;
+    this._expertId = expertId;
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  set id(value: string) {
+    this._id = value;
+  }
+
+  get expertId(): number | undefined {
+    return this._expertId;
+  }
+
+  set expertId(value: number | undefined) {
+    this._expertId = value;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  get role(): 'R' | 'A' | 'C' | 'I' {
+    return this._role;
+  }
+
+  set role(value: 'R' | 'A' | 'C' | 'I') {
+    this._role = value;
   }
 }
 
@@ -230,13 +478,29 @@ export class ProjectMember {
  */
 export class ExpertOption {
   /** Die ID des Experten (as number or string). */
-  id: number | string;
+  private _id: number | string;
   /** Der vollständige Name des Experten. */
-  name: string;
+  private _name: string;
 
   constructor(id: number | string, name: string) {
-    this.id = id;
-    this.name = name;
+    this._id = id;
+    this._name = name;
+  }
+
+  get id(): number | string {
+    return this._id;
+  }
+
+  set id(value: number | string) {
+    this._id = value;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
   }
 }
 
@@ -261,23 +525,23 @@ export class ExpertOption {
  */
 export class NewProject {
   /** Der Titel des Projekts. */
-  title: string;
+  private _title: string;
   /** Eine kurze Zusammenfassung oder Beschreibung des Projekts. */
-  description: string;
+  private _description: string;
   /** Das Startdatum des Projekts (Format: YYYY-MM-DD). */
-  startDate: string;
+  private _startDate: string;
   /** Das Enddatum des Projekts (Format: YYYY-MM-DD). */
-  endDate: string;
+  private _endDate: string;
   /** Der aktuelle Projektstatus (z. B. 'Ideen-Phase'). */
-  state: string;
+  private _state: string;
   /** Der geografische oder organisatorische Ort des Projekts. */
-  location: string;
+  private _location: string;
   /** Optionale URL zur Projekt-Website. */
-  websiteUrl: string;
+  private _websiteUrl: string;
   /** Zusätzliche, detaillierte Projektinformationen. */
-  details: string;
+  private _details: string;
   /** Liste der dem Projekt zugewiesenen Mitglieder. */
-  members: ProjectMember[];
+  private _members: ProjectMember[];
 
   constructor(
     title: string,
@@ -290,15 +554,87 @@ export class NewProject {
     details: string,
     members: ProjectMember[],
   ) {
-    this.title = title;
-    this.description = description;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.state = state;
-    this.location = location;
-    this.websiteUrl = websiteUrl;
-    this.details = details;
-    this.members = members;
+    this._title = title;
+    this._description = description;
+    this._startDate = startDate;
+    this._endDate = endDate;
+    this._state = state;
+    this._location = location;
+    this._websiteUrl = websiteUrl;
+    this._details = details;
+    this._members = members;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  set title(value: string) {
+    this._title = value;
+  }
+
+  get description(): string {
+    return this._description;
+  }
+
+  set description(value: string) {
+    this._description = value;
+  }
+
+  get startDate(): string {
+    return this._startDate;
+  }
+
+  set startDate(value: string) {
+    this._startDate = value;
+  }
+
+  get endDate(): string {
+    return this._endDate;
+  }
+
+  set endDate(value: string) {
+    this._endDate = value;
+  }
+
+  get state(): string {
+    return this._state;
+  }
+
+  set state(value: string) {
+    this._state = value;
+  }
+
+  get location(): string {
+    return this._location;
+  }
+
+  set location(value: string) {
+    this._location = value;
+  }
+
+  get websiteUrl(): string {
+    return this._websiteUrl;
+  }
+
+  set websiteUrl(value: string) {
+    this._websiteUrl = value;
+  }
+
+  get details(): string {
+    return this._details;
+  }
+
+  set details(value: string) {
+    this._details = value;
+  }
+
+  get members(): ProjectMember[] {
+    return this._members;
+  }
+
+  set members(value: ProjectMember[]) {
+    this._members = value;
   }
 }
 
@@ -325,27 +661,27 @@ export class NewProject {
  */
 export class ProjectDetails {
   /** Eindeutige ID des Projekts. */
-  id: string;
+  private _id: string;
   /** Der Projekttitel. */
-  title: string;
+  private _title: string;
   /** Kurze Zusammenfassung oder Beschreibung des Projekts. */
-  description: string;
+  private _description: string;
   /** Startdatum des Projekts (Format: YYYY-MM-DD). */
-  startDate: string;
+  private _startDate: string;
   /** Enddatum des Projekts (Format: YYYY-MM-DD). */
-  endDate: string;
+  private _endDate: string;
   /** Der aktuelle Projektstatus (z. B. 'Ideen-Phase'). */
-  state: string;
+  private _state: string;
   /** Alternativer oder datenbankspezifischer Projektstatus. */
-  project_state?: string;
+  private _project_state?: string;
   /** Geografischer oder organisatorischer Standort des Projekts. */
-  location: string;
+  private _location: string;
   /** Optionale Projekt-Website-URL. */
-  websiteUrl: string;
+  private _websiteUrl: string;
   /** Zusätzliche, detaillierte Projektbeschreibungen oder Notizen. */
-  details: string;
+  private _details: string;
   /** Liste aller dem Projekt zugewiesenen Experten. */
-  experts: ProjectMember[];
+  private _experts: ProjectMember[];
 
   constructor(
     id: string,
@@ -360,17 +696,105 @@ export class ProjectDetails {
     experts: ProjectMember[],
     project_state?: string,
   ) {
-    this.id = id;
-    this.title = title;
-    this.description = description;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.state = state;
-    this.project_state = project_state;
-    this.location = location;
-    this.websiteUrl = websiteUrl;
-    this.details = details;
-    this.experts = experts;
+    this._id = id;
+    this._title = title;
+    this._description = description;
+    this._startDate = startDate;
+    this._endDate = endDate;
+    this._state = state;
+    this._project_state = project_state;
+    this._location = location;
+    this._websiteUrl = websiteUrl;
+    this._details = details;
+    this._experts = experts;
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  set id(value: string) {
+    this._id = value;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  set title(value: string) {
+    this._title = value;
+  }
+
+  get description(): string {
+    return this._description;
+  }
+
+  set description(value: string) {
+    this._description = value;
+  }
+
+  get startDate(): string {
+    return this._startDate;
+  }
+
+  set startDate(value: string) {
+    this._startDate = value;
+  }
+
+  get endDate(): string {
+    return this._endDate;
+  }
+
+  set endDate(value: string) {
+    this._endDate = value;
+  }
+
+  get state(): string {
+    return this._state;
+  }
+
+  set state(value: string) {
+    this._state = value;
+  }
+
+  get project_state(): string | undefined {
+    return this._project_state;
+  }
+
+  set project_state(value: string | undefined) {
+    this._project_state = value;
+  }
+
+  get location(): string {
+    return this._location;
+  }
+
+  set location(value: string) {
+    this._location = value;
+  }
+
+  get websiteUrl(): string {
+    return this._websiteUrl;
+  }
+
+  set websiteUrl(value: string) {
+    this._websiteUrl = value;
+  }
+
+  get details(): string {
+    return this._details;
+  }
+
+  set details(value: string) {
+    this._details = value;
+  }
+
+  get experts(): ProjectMember[] {
+    return this._experts;
+  }
+
+  set experts(value: ProjectMember[]) {
+    this._experts = value;
   }
 }
 
@@ -423,33 +847,33 @@ export interface AddExpertViewProps {
  */
 export class ExpertFormData {
   /** Der Nachname des Experten. */
-  name: string;
+  private _name: string;
   /** Der Vorname des Experten. */
-  prename: string;
+  private _prename: string;
   /** Der Titel oder akademische Grad (z. B. "Prof. Dr."). */
-  title: string;
+  private _title: string;
   /** Die primäre Zugehörigkeit oder Organisation. */
-  primary_organization: string;
+  private _primary_organization: string;
   /** Weitere Zugehörigkeiten oder Organisationen (kommagetrennt). */
-  other_organizations: string;
+  private _other_organizations: string;
   /** Wissenschaftliche oder fachliche Arbeitsbereiche. */
-  scientificAreas: string;
+  private _scientificAreas: string;
   /** Die E-Mail-Adresse des Experten. */
-  email: string;
+  private _email: string;
   /** Die Telefonnummer des Experten. */
-  phone: string;
+  private _phone: string;
   /** Datum des letzten Kontakts (optional). */
-  last_contact?: string;
+  private _last_contact?: string;
   /** Eine detaillierte Beschreibung oder Kurzbiografie des Experten. */
-  description: string;
+  private _description: string;
   /** Spezifische Fachbereiche oder Felder, in denen der Experte tätig ist. */
-  expert_fields: string;
+  private _expert_fields: string;
   /** Indikator, ob der Experte im wirtschaftlichen Bereich tätig ist. */
-  economic: boolean;
+  private _economic: boolean;
   /** Indikator, ob der Experte im wissenschaftlichen Bereich tätig ist. */
-  science: boolean;
+  private _science: boolean;
   /** Indikator, ob der Experte im sozialen Bereich tätig ist. */
-  social: boolean;
+  private _social: boolean;
 
   constructor(
     name: string,
@@ -467,20 +891,132 @@ export class ExpertFormData {
     social: boolean,
     last_contact?: string,
   ) {
-    this.name = name;
-    this.prename = prename;
-    this.title = title;
-    this.primary_organization = primary_organization;
-    this.other_organizations = other_organizations;
-    this.scientificAreas = scientificAreas;
-    this.email = email;
-    this.phone = phone;
-    this.last_contact = last_contact;
-    this.description = description;
-    this.expert_fields = expert_fields;
-    this.economic = economic;
-    this.science = science;
-    this.social = social;
+    this._name = name;
+    this._prename = prename;
+    this._title = title;
+    this._primary_organization = primary_organization;
+    this._other_organizations = other_organizations;
+    this._scientificAreas = scientificAreas;
+    this._email = email;
+    this._phone = phone;
+    this._last_contact = last_contact;
+    this._description = description;
+    this._expert_fields = expert_fields;
+    this._economic = economic;
+    this._science = science;
+    this._social = social;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  get prename(): string {
+    return this._prename;
+  }
+
+  set prename(value: string) {
+    this._prename = value;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  set title(value: string) {
+    this._title = value;
+  }
+
+  get primary_organization(): string {
+    return this._primary_organization;
+  }
+
+  set primary_organization(value: string) {
+    this._primary_organization = value;
+  }
+
+  get other_organizations(): string {
+    return this._other_organizations;
+  }
+
+  set other_organizations(value: string) {
+    this._other_organizations = value;
+  }
+
+  get scientificAreas(): string {
+    return this._scientificAreas;
+  }
+
+  set scientificAreas(value: string) {
+    this._scientificAreas = value;
+  }
+
+  get email(): string {
+    return this._email;
+  }
+
+  set email(value: string) {
+    this._email = value;
+  }
+
+  get phone(): string {
+    return this._phone;
+  }
+
+  set phone(value: string) {
+    this._phone = value;
+  }
+
+  get last_contact(): string | undefined {
+    return this._last_contact;
+  }
+
+  set last_contact(value: string | undefined) {
+    this._last_contact = value;
+  }
+
+  get description(): string {
+    return this._description;
+  }
+
+  set description(value: string) {
+    this._description = value;
+  }
+
+  get expert_fields(): string {
+    return this._expert_fields;
+  }
+
+  set expert_fields(value: string) {
+    this._expert_fields = value;
+  }
+
+  get economic(): boolean {
+    return this._economic;
+  }
+
+  set economic(value: boolean) {
+    this._economic = value;
+  }
+
+  get science(): boolean {
+    return this._science;
+  }
+
+  set science(value: boolean) {
+    this._science = value;
+  }
+
+  get social(): boolean {
+    return this._social;
+  }
+
+  set social(value: boolean) {
+    this._social = value;
   }
 }
 
@@ -496,12 +1032,28 @@ export class ExpertFormData {
  */
 export class Organization {
   /** Eindeutige ID der Organisation. */
-  id: number;
+  private _id: number;
   /** Der Name der Organisation. */
-  name: string;
+  private _name: string;
 
   constructor(id: number, name: string) {
-    this.id = id;
-    this.name = name;
+    this._id = id;
+    this._name = name;
+  }
+
+  get id(): number {
+    return this._id;
+  }
+
+  set id(value: number) {
+    this._id = value;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
   }
 }

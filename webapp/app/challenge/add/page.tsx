@@ -2,12 +2,23 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ProblemItem } from '@/lib/types';
 
 /**
- * Repräsentiert die Übersicht um Challenges hinzuzufügen. Challenges werden hier ebenfalls als
- * ProblemItem definiert. Zusätzlich gibt es hier auch die Status-Optionen zu der jeweiligen Challenge
- * und die entsprechende Methode zum Absenden des Formulars.
+ * Repräsentiert die Übersicht um Challenges hinzuzufügen. Challenges werden hier als
+ * lokaler Formularzustand verwaltet. Zusätzlich gibt es hier auch die Status-Optionen
+ * zu der jeweiligen Challenge und die entsprechende Methode zum Absenden des Formulars.
+ */
+
+type ChallengeFormState = {
+  title: string;
+  category: string;
+  status: 'Ungelöst' | 'In Bearbeitung' | 'Gelöst';
+  summary: string;
+};
+
+/**
+ * Verfügbare Status-Optionen für das Formular inklusive ihrer UI-Farbzuordnungen.
+ * Wird als Readonly-Array deklariert.
  */
 
 /**
@@ -29,14 +40,14 @@ export default function AddChallengePage() {
   /** Next.js Router für die clientseitige Navigation nach erfolgreichem Submit. */
   const router = useRouter();
 
-  /** * Lokaler State für die Formulardaten. 
-   * Schließt `id` und `statusColor` aus, da diese serverseitig oder dynamisch berechnet werden.
+  /**
+   * Lokaler State für die Formulardaten.
    */
-  const [formState, setFormState] = useState<Omit<ProblemItem, 'id' | 'statusColor'>>({
+  const [formState, setFormState] = useState<ChallengeFormState>({
     title: '',
     category: '',
     status: 'Ungelöst',
-    summary: ''
+    summary: '',
   });
 
   /** Status für den Ladezustand während der API-Anfrage. */
@@ -50,8 +61,8 @@ export default function AddChallengePage() {
    * * @param field - Der Schlüssel des Feldes im `formState`, das aktualisiert werden soll.
    * @param value - Der neue Wert für das entsprechende Feld.
    */
-  const handleChange = (field: keyof typeof formState, value: string) => {
-    setFormState((current) => ({ ...current, [field]: value }));
+  const handleChange = (field: keyof ChallengeFormState, value: string) => {
+    setFormState((current: ChallengeFormState) => ({ ...current, [field]: value }));
   };
 
   /**

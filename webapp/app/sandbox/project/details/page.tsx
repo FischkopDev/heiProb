@@ -6,9 +6,40 @@ import { UserPlus } from 'lucide-react';
 import { ProjectMember, ExpertOption, ProjectDetails } from '@/lib/types';
 
 /**
+ * Erzeugt eine neue `ProjectDetails`-Instanz aus Formular- oder API-Daten.
+ */
+const createProjectDetails = (data: {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  state: string;
+  location: string;
+  websiteUrl: string;
+  details: string;
+  experts: ProjectMember[];
+  project_state?: string;
+}): ProjectDetails => {
+  return new ProjectDetails(
+    data.id,
+    data.title,
+    data.description,
+    data.startDate,
+    data.endDate,
+    data.state,
+    data.location,
+    data.websiteUrl,
+    data.details,
+    data.experts,
+    data.project_state,
+  );
+};
+
+/**
  * Ein leeres Standard-Objekt zur Initialisierung des {@link ProjectDetails}-States.
  */
-const emptyProject: ProjectDetails = {
+const emptyProject: ProjectDetails = createProjectDetails({
   id: '',
   title: '',
   description: '',
@@ -19,7 +50,7 @@ const emptyProject: ProjectDetails = {
   websiteUrl: '',
   details: '',
   experts: [],
-};
+});
 
 /**
  * Eine Next.js-Client-Komponente, die eine Detailansicht zur Bearbeitung eines bestehenden Projekts bereitstellt.
@@ -107,7 +138,7 @@ export default function ProjectDetailsPage() {
           return;
         }
 
-        setProject({
+        setProject(createProjectDetails({
           id: String(rawProject.id),
           title: rawProject.title || '',
           description: rawProject.description || '',
@@ -120,13 +151,15 @@ export default function ProjectDetailsPage() {
           websiteUrl: rawProject.websiteUrl || '',
           details: rawProject.details || '',
           experts: Array.isArray(rawProject.experts)
-            ? rawProject.experts.map((expert: any) => ({
-                id: String(expert.expert_id ?? expert.id ?? ''),
-                name: expert.name,
-                role: expert.role || 'R',
-              }))
+            ? rawProject.experts.map((expert: any) =>
+                new ProjectMember(
+                  String(expert.expert_id ?? expert.id ?? ''),
+                  expert.name,
+                  expert.role || 'R',
+                )
+              )
             : [],
-        });
+        }));
       } catch (loadError: any) {
         setError(loadError?.message || 'Fehler beim Laden des Projekts.');
       } finally {
@@ -144,7 +177,23 @@ export default function ProjectDetailsPage() {
    * @param value - Der neue Wert für dieses Feld.
    */
   const handleChange = (field: keyof ProjectDetails, value: string) => {
-    setProject((prev) => ({ ...prev, [field]: value }));
+    setProject((prev) => {
+      const next = createProjectDetails({
+        id: prev.id,
+        title: prev.title,
+        description: prev.description,
+        startDate: prev.startDate,
+        endDate: prev.endDate,
+        state: prev.state,
+        project_state: prev.project_state,
+        location: prev.location,
+        websiteUrl: prev.websiteUrl,
+        details: prev.details,
+        experts: prev.experts,
+      });
+      next[field] = value as any;
+      return next;
+    });
   };
 
   /**
@@ -170,13 +219,26 @@ export default function ProjectDetailsPage() {
       return;
     }
 
-    setProject((prev) => ({
-      ...prev,
-      experts: [
+    setProject((prev) => {
+      const next = createProjectDetails({
+        id: prev.id,
+        title: prev.title,
+        description: prev.description,
+        startDate: prev.startDate,
+        endDate: prev.endDate,
+        state: prev.state,
+        project_state: prev.project_state,
+        location: prev.location,
+        websiteUrl: prev.websiteUrl,
+        details: prev.details,
+        experts: [...prev.experts],
+      });
+      next.experts = [
         ...prev.experts,
-        { id: String(selectedExpert.id), name: selectedExpert.name, role: newMemberRole },
-      ],
-    }));
+        new ProjectMember(String(selectedExpert.id), selectedExpert.name, newMemberRole),
+      ];
+      return next;
+    });
     
     // Reset der temporären Zuweisungs-States
     setNewMemberId('');
@@ -188,10 +250,22 @@ export default function ProjectDetailsPage() {
    * * @param memberId - Die ID des zu entfernenden Experten.
    */
   const handleRemoveMember = (memberId: string) => {
-    setProject((prev) => ({
-      ...prev,
-      experts: prev.experts.filter((member) => member.id !== memberId),
-    }));
+    setProject((prev) => {
+      const next = createProjectDetails({
+        id: prev.id,
+        title: prev.title,
+        description: prev.description,
+        startDate: prev.startDate,
+        endDate: prev.endDate,
+        state: prev.state,
+        project_state: prev.project_state,
+        location: prev.location,
+        websiteUrl: prev.websiteUrl,
+        details: prev.details,
+        experts: prev.experts.filter((member) => member.id !== memberId),
+      });
+      return next;
+    });
   };
 
   /**

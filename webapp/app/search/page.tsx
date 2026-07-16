@@ -10,23 +10,23 @@ import { Challenge, Project, Expert } from '@/lib/types';
 
 /** Mock-Daten für Challenges zu Test- und Entwicklungszwecken. */
 const mockChallenges: Challenge[] = [
-  { id: 'CH-01', title: 'CO2-neutrale Altstadt bis 2030', department: 'Umweltamt', status: 'Aktiv' },
-  { id: 'CH-02', title: 'Optimierung des Radwegenetzes', department: 'Verkehrsplanung', status: 'In Vorbereitung' },
-  { id: 'CH-03', title: 'Smarte Abfallkonzepte für Feste', department: 'Stadtwerke', status: 'Aktiv' },
+  new Challenge('CH-01', 'CO2-neutrale Altstadt bis 2030', 'Umweltamt', 'Aktiv'),
+  new Challenge('CH-02', 'Optimierung des Radwegenetzes', 'Verkehrsplanung', 'In Vorbereitung'),
+  new Challenge('CH-03', 'Smarte Abfallkonzepte für Feste', 'Stadtwerke', 'Aktiv'),
 ];
 
 /** Mock-Daten für Projekte zu Test- und Entwicklungszwecken. */
 const mockProjects: Project[] = [
-  { id: 'HD-311', title: 'Digitale Parkraumbewirtschaftung', stage: 'Test-Phase', location: 'Heidelberg-Altstadt' },
-  { id: 'HD-215', title: 'Smart Lighting Bahnstadt', stage: 'Challenge-Phase', location: 'Bahnstadt' },
-  { id: 'HD-102', title: 'Nachhaltige Bewässerung Neckarwiese', stage: 'Reallabor-Phase', location: 'Neuenheim' },
+  new Project('HD-311', 'Digitale Parkraumbewirtschaftung', 'Test-Phase', undefined, 'Heidelberg-Altstadt'),
+  new Project('HD-215', 'Smart Lighting Bahnstadt', 'Challenge-Phase', undefined, 'Bahnstadt'),
+  new Project('HD-102', 'Nachhaltige Bewässerung Neckarwiese', 'Reallabor-Phase', undefined, 'Neuenheim'),
 ];
 
 /** Mock-Daten für Experten-Profile zu Test- und Entwicklungszwecken. */
 const mockExperts: Expert[] = [
-  { id: 'EX-99', name: 'Dr. Maria Lorenz', role: 'Expertin für urbane Mobilität', skills: ['Verkehr', 'Smart City', 'KI'] },
-  { id: 'EX-42', name: 'Thomas Keller', role: 'Projektentwickler IoT', skills: ['Sensorik', 'LoRaWAN', 'IT'] },
-  { id: 'EX-12', name: 'Prof. Dr. Jan Schmidt', role: 'Umweltwissenschaftler', skills: ['Klima', 'Hydrologie', 'Wissenschaft'] },
+  new Expert('EX-99', 'Dr. Maria Lorenz', 'Expertin für urbane Mobilität', ['Verkehr', 'Smart City', 'KI']),
+  new Expert('EX-42', 'Thomas Keller', 'Projektentwickler IoT', ['Sensorik', 'LoRaWAN', 'IT']),
+  new Expert('EX-12', 'Prof. Dr. Jan Schmidt', 'Umweltwissenschaftler', ['Klima', 'Hydrologie', 'Wissenschaft']),
 ];
 
 /**

@@ -5,6 +5,58 @@ import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ExpertFormData, AddExpertViewProps } from '@/lib/types';
 
+const createExpertFormData = (data: {
+  name: string;
+  prename: string;
+  title: string;
+  primary_organization: string;
+  other_organizations: string;
+  scientificAreas: string;
+  email: string;
+  phone: string;
+  description: string;
+  expert_fields: string;
+  economic: boolean;
+  science: boolean;
+  social: boolean;
+  last_contact?: string;
+}): ExpertFormData => {
+  return new ExpertFormData(
+    data.name,
+    data.prename,
+    data.title,
+    data.primary_organization,
+    data.other_organizations,
+    data.scientificAreas,
+    data.email,
+    data.phone,
+    data.description,
+    data.expert_fields,
+    data.economic,
+    data.science,
+    data.social,
+    data.last_contact,
+  );
+};
+
+const cloneExpertFormData = (prev: ExpertFormData): ExpertFormData =>
+  createExpertFormData({
+    name: prev.name,
+    prename: prev.prename,
+    title: prev.title,
+    primary_organization: prev.primary_organization,
+    other_organizations: prev.other_organizations,
+    scientificAreas: prev.scientificAreas,
+    email: prev.email,
+    phone: prev.phone,
+    description: prev.description,
+    expert_fields: prev.expert_fields,
+    economic: prev.economic,
+    science: prev.science,
+    social: prev.social,
+    last_contact: prev.last_contact,
+  });
+
 /**
  * Eine Next.js-Client-Komponente, die ein Formular zum Erstellen und Speichern 
  * eines neuen Experten-Profils bereitstellt. Die Daten werden sowohl an die Datenbank 
@@ -19,21 +71,23 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
    * Lokaler State für die Formulardaten der Expert*in.
    * Initialisiert mit leeren Standardwerten basierend auf dem Typ {@link ExpertFormData}.
    */
-  const [formData, setFormData] = useState<ExpertFormData>({
-    name: '',
-    prename: '',
-    title: '',
-    primary_organization: '',
-    other_organizations: '',
-    scientificAreas: '',
-    email: '',
-    phone: '',
-    description: '',
-    expert_fields: '',
-    economic: false,
-    science: false,
-    social: false,
-  });
+  const [formData, setFormData] = useState<ExpertFormData>(() =>
+    createExpertFormData({
+      name: '',
+      prename: '',
+      title: '',
+      primary_organization: '',
+      other_organizations: '',
+      scientificAreas: '',
+      email: '',
+      phone: '',
+      description: '',
+      expert_fields: '',
+      economic: false,
+      science: false,
+      social: false,
+    }),
+  );
 
   /**
    * Lokaler State für den Bereich oder das Fachgebiet der Organisation (z. B. eine Abteilung oder ein spezifisches Feld).
@@ -47,10 +101,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
    */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const next = cloneExpertFormData(prev);
+      (next as any)[name] = value;
+      return next;
+    });
   };
 
   /**
@@ -290,7 +345,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
                   type="checkbox"
                   name="economic"
                   checked={formData.economic}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, economic: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => {
+                    const next = cloneExpertFormData(prev);
+                    next.economic = e.target.checked;
+                    return next;
+                  })}
                   className="mr-2"
                 />
                 Wirtschaft
@@ -300,7 +359,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
                   type="checkbox"
                   name="science"
                   checked={formData.science}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, science: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => {
+                    const next = cloneExpertFormData(prev);
+                    next.science = e.target.checked;
+                    return next;
+                  })}
                   className="mr-2"
                 />
                 Wissenschaft
@@ -310,7 +373,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
                   type="checkbox"
                   name="social"
                   checked={formData.social}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, social: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => {
+                    const next = cloneExpertFormData(prev);
+                    next.social = e.target.checked;
+                    return next;
+                  })}
                   className="mr-2"
                 />
                 Soziales

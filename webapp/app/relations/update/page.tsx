@@ -5,6 +5,58 @@ import { ArrowLeft } from 'lucide-react';
 import { ExpertFormData, AddExpertViewProps } from '@/lib/types';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+const createExpertFormData = (data: {
+  name: string;
+  prename: string;
+  title: string;
+  primary_organization: string;
+  other_organizations: string;
+  scientificAreas: string;
+  email: string;
+  phone: string;
+  last_contact?: string;
+  description: string;
+  expert_fields: string;
+  economic: boolean;
+  science: boolean;
+  social: boolean;
+}): ExpertFormData => {
+  return new ExpertFormData(
+    data.name,
+    data.prename,
+    data.title,
+    data.primary_organization,
+    data.other_organizations,
+    data.scientificAreas,
+    data.email,
+    data.phone,
+    data.description,
+    data.expert_fields,
+    data.economic,
+    data.science,
+    data.social,
+    data.last_contact,
+  );
+};
+
+const cloneExpertFormData = (prev: ExpertFormData): ExpertFormData =>
+  createExpertFormData({
+    name: prev.name,
+    prename: prev.prename,
+    title: prev.title,
+    primary_organization: prev.primary_organization,
+    other_organizations: prev.other_organizations,
+    scientificAreas: prev.scientificAreas,
+    email: prev.email,
+    phone: prev.phone,
+    last_contact: prev.last_contact,
+    description: prev.description,
+    expert_fields: prev.expert_fields,
+    economic: prev.economic,
+    science: prev.science,
+    social: prev.social,
+  });
+
 /**
  * Eine Next.js-Client-Komponente, die als Formular zum Bearbeiten oder Erstellen
  * eines Experten-Profils dient. Wenn ein `expertId`-Query-Parameter in der URL existiert,
@@ -17,22 +69,24 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
    * Lokaler State für die Formulardaten.
    * Wird im Bearbeitungsmodus asynchron mit den Daten aus der DB überschrieben.
    */
-  const [formData, setFormData] = useState<ExpertFormData>({
-    name: '',
-    prename: '',
-    title: '',
-    primary_organization: '',
-    other_organizations: '',
-    scientificAreas: '',
-    email: '',
-    phone: '',
-    last_contact: '',
-    description: '',
-    expert_fields: '',
-    economic: false,
-    science: false,
-    social: false,
-  });
+  const [formData, setFormData] = useState<ExpertFormData>(() =>
+    createExpertFormData({
+      name: '',
+      prename: '',
+      title: '',
+      primary_organization: '',
+      other_organizations: '',
+      scientificAreas: '',
+      email: '',
+      phone: '',
+      last_contact: '',
+      description: '',
+      expert_fields: '',
+      economic: false,
+      science: false,
+      social: false,
+    }),
+  );
 
   /** Next.js Router für clientseitige Weiterleitungen. */
   const router = useRouter();
@@ -62,24 +116,32 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
         const found = experts.find((e: any) => String(e.expert_id) === String(expertIdParam));
         
         if (found) {
-          setFormData((prev) => ({
-            ...prev,
-            name: found.name || '',
-            prename: found.prename || '',
-            title: found.title || '',
-            primary_organization: found.primary_organization || found.organization?.name || '',
-            other_organizations: Array.isArray(found.other_organizations) ? found.other_organizations.join(', ') : (found.other_organizations || ''),
-            scientificAreas: Array.isArray(found.scientificAreas) ? found.scientificAreas.join(', ') : (found.scientificAreas || ''),
-            email: found.email || '',
-            phone: found.phone || '',
-            // Formatiert das Datum sauber in das Format YYYY-MM-DD für HTML5-Date-Inputs
-            last_contact: found.last_contact ? new Date(found.last_contact).toISOString().slice(0,10) : (found.last_contact || ''),
-            description: found.description || '',
-            expert_fields: Array.isArray(found.expert_fields) ? found.expert_fields.join(', ') : (found.expert_fields || ''),
-            economic: !!found.economic,
-            science: !!found.science,
-            social: !!found.social,
-          }));
+          setFormData(
+            createExpertFormData({
+              name: found.name || '',
+              prename: found.prename || '',
+              title: found.title || '',
+              primary_organization: found.primary_organization || found.organization?.name || '',
+              other_organizations: Array.isArray(found.other_organizations)
+                ? found.other_organizations.join(', ')
+                : found.other_organizations || '',
+              scientificAreas: Array.isArray(found.scientificAreas)
+                ? found.scientificAreas.join(', ')
+                : found.scientificAreas || '',
+              email: found.email || '',
+              phone: found.phone || '',
+              last_contact: found.last_contact
+                ? new Date(found.last_contact).toISOString().slice(0, 10)
+                : found.last_contact || '',
+              description: found.description || '',
+              expert_fields: Array.isArray(found.expert_fields)
+                ? found.expert_fields.join(', ')
+                : found.expert_fields || '',
+              economic: !!found.economic,
+              science: !!found.science,
+              social: !!found.social,
+            }),
+          );
         }
       } catch (error) {
         console.error('Failed to load expert for editing', error);
@@ -96,10 +158,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
    */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const next = cloneExpertFormData(prev);
+      (next as any)[name] = value;
+      return next;
+    });
   };
 
   /**
@@ -362,7 +425,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
                   type="checkbox"
                   name="economic"
                   checked={formData.economic}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, economic: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => {
+                    const next = cloneExpertFormData(prev);
+                    next.economic = e.target.checked;
+                    return next;
+                  })}
                   className="mr-2"
                 />
                 Wirtschaft
@@ -372,7 +439,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
                   type="checkbox"
                   name="science"
                   checked={formData.science}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, science: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => {
+                    const next = cloneExpertFormData(prev);
+                    next.science = e.target.checked;
+                    return next;
+                  })}
                   className="mr-2"
                 />
                 Wissenschaft
@@ -382,7 +453,11 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
                   type="checkbox"
                   name="social"
                   checked={formData.social}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, social: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => {
+                    const next = cloneExpertFormData(prev);
+                    next.social = e.target.checked;
+                    return next;
+                  })}
                   className="mr-2"
                 />
                 Soziales
@@ -394,10 +469,9 @@ export default function AddExpertView({ onSave, onCancel }: AddExpertViewProps) 
               <label className="block text-sm font-semibold text-slate-700 mb-2">Letzter Kontakt</label>
               <input
                 type="date"
-                name="primary_organization"
+                name="last_contact"
                 value={formData.last_contact}
                 onChange={handleInputChange}
-                placeholder="z.B. Universität Heidelberg"
                 className="w-half px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
