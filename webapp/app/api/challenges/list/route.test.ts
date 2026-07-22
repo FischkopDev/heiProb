@@ -1,15 +1,35 @@
+/**
+ * @module ChallengeListGetUnitTests
+ * @description Unit-Tests für das Abrufen aller Challenges (`GET /api/challenges/list`).
+ * Testet das Zusammenspiel zwischen dem Erstellen neuer Daten und der darauffolgenden
+ * Auflistung über die API.
+ */
+
 import { GET } from './route'; 
 import { POST } from '../add/route';
 import pool from "../../../../lib/db";
 import { test, expect } from 'vitest';
 
-// Hilfsfunktion für Requests
+/**
+ * Erstellt ein Mock-`Request`-Objekt für den `POST`-Endpunkt zum Anlegen einer Challenge.
+ *
+ * @param obj - Das Objekt mit den Challenge-Daten, das im JSON-Body gesendet werden soll.
+ * @returns Ein konfiguriertes `Request`-Objekt mit der Methode `POST` und dem übergebenen Body.
+ */
 const createRequest = (obj: any) => new Request('http://localhost/api/challenges/add', {
   method: 'POST',
   body: JSON.stringify(obj)
 });
 
-
+/**
+ * @test DB: Challenge auflisten
+ * @description Testet das Auslesen von Challenges über die GET-Route:
+ * 1. Legt über den `POST`-Endpunkt eine neue Challenge als Testdatensatz an.
+ * 2. Sendet einen `GET`-Request, um die Liste aller Challenges abzurufen.
+ * 3. Bricht mit detaillierter Fehlermeldung ab, falls der Statuscode ungleich `200` ist.
+ * 4. Prüft, ob der zuvor erstellte Testeintrag in der Liste enthalten ist.
+ * 5. Führt anschließend ein Cleanup (Löschen der Testdaten aus der Datenbank) durch.
+ */
 test("DB: Challenge auflisten", async () => {
   const testData = {
     title: "DB-Integrationstest",

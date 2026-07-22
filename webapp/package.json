@@ -10,9 +10,9 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "docs": "typedoc",
-    "doc:md": "typedoc",
-    "doc:pdf": "npm run doc:md && md-to-pdf docs/README.md --output-file docs/api-dokumentation.pdf"
-  },
+ "doc:md": "typedoc --plugin typedoc-plugin-markdown --entryPoints . --entryPointStrategy expand --router module --out docs --excludePrivate false --excludeProtected false --excludeNotDocumented false",
+  "doc:pdf": "npm run doc:md && find docs -name '*.md' -type f -exec cat {} + > temp_gesamt.md && npx md-to-pdf temp_gesamt.md && mv temp_gesamt.pdf docs/api-dokumentation.pdf && rm temp_gesamt.md"
+},
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",

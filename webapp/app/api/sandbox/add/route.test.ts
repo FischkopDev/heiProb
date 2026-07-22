@@ -1,7 +1,20 @@
+/**
+ * @module SandboxAddUnitTests
+ * @description Unit-Tests für das Anlegen von Sandbox-Projekten (`POST /api/sandbox/add`).
+ * Überprüft die Datenvalidierung des API-Endpunkts sowie die korrekte Speicherung 
+ * und Referenzierung in der Datenbank-Tabelle `Project`.
+ */
+
 import { POST } from './route';
 import pool from '../../../../lib/db';
 import { test, expect } from 'vitest';
 
+/**
+ * Erstellt ein Mock-`Request`-Objekt für den `POST`-Endpunkt zum Anlegen eines Sandbox-Projekts.
+ *
+ * @param obj - Das Objekt mit den Projektdaten, das im JSON-Body gesendet werden soll.
+ * @returns Ein konfiguriertes `Request`-Objekt mit Methode `POST`, JSON-Headers und dem übergebenen Body.
+ */
 const createRequest = (obj: any) => new Request('http://localhost/api/sandbox/add', {
   method: 'POST',
   headers: {
@@ -10,6 +23,14 @@ const createRequest = (obj: any) => new Request('http://localhost/api/sandbox/ad
   body: JSON.stringify(obj),
 });
 
+/**
+ * @test DB: Sandbox-Projekt erfolgreich anlegen und prüfen
+ * @description Testet den vollständigen Prozess zum Erstellen eines Sandbox-Projekts:
+ * 1. Sendet einen vollständigen, gültigen Datensatz an die API.
+ * 2. Überprüft den HTTP-Status `200 OK` und die Rückgabe einer validen `projectId`.
+ * 3. Verifiziert per Datenbank-Query, ob der Eintrag in der Tabelle `Project` existiert und die Felder übereinstimmen.
+ * 4. Führt ein geordnetes Cleanup durch (löscht verknüpfte Einträge in `ProjectRelation` und das `Project` selbst).
+ */
 test('DB: Sandbox-Projekt erfolgreich anlegen und prüfen', async () => {
   const testData = {
     title: 'DB-Sandbox-Projekt-Test',
@@ -45,6 +66,13 @@ test('DB: Sandbox-Projekt erfolgreich anlegen und prüfen', async () => {
   await pool.query('DELETE FROM "Project" WHERE id = $1', [projectId]);
 });
 
+/**
+ * @test DB: Fehler bei fehlenden Pflichtfeldern
+ * @description Verifiziert die Validierung eingehender Formulardaten auf Serverseite:
+ * 1. Sendet einen unvollständigen Request (nur Titel vorhanden).
+ * 2. Erwartet den HTTP-Statuscode `400 Bad Request`.
+ * 3. Prüft, ob die Fehlermeldung "Missing required fields" zurückgegeben wird.
+ */
 test('DB: Fehler bei fehlenden Pflichtfeldern', async () => {
   const invalidData = {
     title: 'Unvollständiges Projekt',
