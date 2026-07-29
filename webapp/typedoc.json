@@ -6,7 +6,6 @@
   "excludeInternal": true,
   "excludePrivate": true,
   "exclude": [
-    "**/*.test.ts",
     "**/*.spec.ts",
     "**/*.test.tsx",
     "**/*.spec.tsx",
@@ -15,5 +14,5 @@
     "**/generated/**",
     ".next/**"
   ],
-  "plugin": ["typedoc-plugin-markdown"]
+  "plugin": ["typedoc-plugin-markdown"],
 }

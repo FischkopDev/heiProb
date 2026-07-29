@@ -1,10 +1,31 @@
-import { expect, test } from 'vitest'
-import { addOrganization, addExpert, addExpertFields, POST} from './route';
+/**
+ * UnitTests für die Routen-Handler und Datenbank-Helfer der Experten-Verwaltung.
+ * 
+ * Dieser Testsuite verifiziert das Anlegen, Verknüpfen und Auslesen von:
+ * - Organisationen (`Organization`)
+ * - Experten (`Expert`)
+ * - Expertise-Feldern (`ExpertField`)
+ * 
+ * @module RouteTests
+ */
+
+import { expect, test } from 'vitest';
+import { addOrganization, addExpert, addExpertFields, POST } from './route';
 import pool from "../../../../lib/db";
 import { fail } from 'assert';
 
-
-test("AddOrganization and GetOrganization",async () => {
+/**
+ * Testet das Erstellen und das anschließende Auslesen einer Organisation.
+ * 
+ * **Ablauf:**
+ * 1. Legt eine Test-Organisation in der Datenbank an.
+ * 2. Fragt die angelegte Organisation anhand der generierten ID ab.
+ * 3. Prüft alle Attribute auf Gleichheit.
+ * 4. Führt ein Cleanup in der Datenbank durch.
+ * 
+ * @category Database Integration
+ */
+test("AddOrganization and GetOrganization", async () => {
     //test of the actual function
     const name = "Test Organization";
     const location = "Test Location";
@@ -30,8 +51,19 @@ test("AddOrganization and GetOrganization",async () => {
       fail("Organization was not added to the database");
     }
 
-})
+});
 
+/**
+ * Testet das Hinzufügen eines Experten und verifiziert die gespeicherten Felder direkt in der DB.
+ * 
+ * **Ablauf:**
+ * 1. Erstellt einen Test-Experten mit Stammdaten und Zuordnungen (Wirtschaft/Wissenschaft/Soziales).
+ * 2. Fragt den Eintrag per E-Mail und Name direkt aus der `Expert`-Tabelle ab.
+ * 3. Validiert alle Eigenschaften inkl. Booleans.
+ * 4. Löscht den Testdatensatz.
+ * 
+ * @category Experts
+ */
 test("AddExpert and Verify in Database", async () => {
     // 1. Testdaten definieren
     const expertData = {
@@ -48,12 +80,8 @@ test("AddExpert and Verify in Database", async () => {
     };
 
     // 2. Funktion ausführen
-    // Hinweis: Die Funktion gibt das Result-Objekt von pool.query zurück
     const result = await addExpert(expertData);
     
-    // Wir holen uns die ID des gerade erstellten Experten
-    // Falls deine Funktion das result von pool.query zurückgibt, 
-    // müssen wir sicherstellen, dass wir die ID für den Cleanup haben.
     const selectResult = await pool.query(
         `SELECT * FROM "Expert" WHERE email = $1 AND name = $2`,
         [expertData.email, expertData.name]
@@ -63,7 +91,6 @@ test("AddExpert and Verify in Database", async () => {
     if (selectResult.rows.length > 0) {
         const dbExpert = selectResult.rows[0];
         const expertId = dbExpert.expert_id;
-        const orgId = dbExpert.primary_organization_id;
 
         expect(dbExpert.name).toBe(expertData.name);
         expect(dbExpert.prename).toBe(expertData.prename);
@@ -75,7 +102,7 @@ test("AddExpert and Verify in Database", async () => {
         expect(dbExpert.science).toBe(expertData.science);
         expect(dbExpert.social).toBe(expertData.social);
 
-        // 4. Cleanup (Wichtig: Erst Experte, dann ggf. die Organisation löschen)
+        // 4. Cleanup
         await pool.query(`DELETE FROM "Expert" WHERE expert_id = $1`, [expertId]);
         
     } else {
@@ -83,6 +110,17 @@ test("AddExpert and Verify in Database", async () => {
     }
 });
 
+/**
+ * Testet das nachträgliche Verknüpfen mehrerer Expertise-Felder mit einem bestehenden Experten.
+ * 
+ * **Ablauf:**
+ * 1. Erstellt einen Basis-Experten.
+ * 2. Verknüpft ein Array von Strings als Fachgebiete (`addExpertFields`).
+ * 3. Stellt sicher, dass die Felder alphabetisch korrekt in `ExpertField` abgelegt wurden.
+ * 4. Bereinigt Verknüpfungen und Experte.
+ * 
+ * @category Expert Fields
+ */
 test("AddExpertFields and Verify in Database", async () => {
     // 1. Erstelle einen Test-Experten
     const expertData = {
@@ -124,6 +162,16 @@ test("AddExpertFields and Verify in Database", async () => {
     await pool.query(`DELETE FROM "Expert" WHERE expert_id = $1`, [expertId]);
 });
 
+/**
+ * Überprüft das Verhalten von `addExpertFields`, wenn ein leeres Array übergeben wird.
+ * 
+ * **Ablauf:**
+ * 1. Legt einen Experten an.
+ * 2. Übergibt ein leeres Array `[]` an `addExpertFields`.
+ * 3. Stellt sicher, dass keine Einträge in `ExpertField` geschrieben werden.
+ * 
+ * @category Expert Fields
+ */
 test("AddExpertFields with Empty Array", async () => {
     // 1. Erstelle einen Test-Experten
     const expertData = {
@@ -157,6 +205,16 @@ test("AddExpertFields with Empty Array", async () => {
     await pool.query(`DELETE FROM "Expert" WHERE expert_id = $1`, [expertId]);
 });
 
+/**
+ * Testet das atomare Anlegen eines Experten inklusive seiner Expertise-Felder in einem Schritt.
+ * 
+ * **Ablauf:**
+ * 1. Übergibt ein `expertData`-Objekt, das bereits das Array `expertFields` enthält, an `addExpert`.
+ * 2. Prüft, ob sowohl die Stammdaten als auch die Fachgebiete korrekt angelegt wurden.
+ * 3. Verifiziert die Anzahl und Namensgleichheit der Felder.
+ * 
+ * @category Experts
+ */
 test("AddExpert with ExpertFields", async () => {
     // 1. Testdaten mit Expertisefeldern definieren
     const expertData = {
@@ -208,6 +266,17 @@ test("AddExpert with ExpertFields", async () => {
     await pool.query(`DELETE FROM "Expert" WHERE expert_id = $1`, [expertId]);
 });
 
+/**
+ * End-to-End-Test für den HTTP-POST-Route-Handler (`POST`).
+ * 
+ * **Ablauf:**
+ * 1. Erstellt einen synthetischen `Request` mit JSON-Body (HTTP-POST).
+ * 2. Ruft die Route-Funktion `POST(mockRequest)` auf.
+ * 3. Prüft den HTTP-Statuscode `200` und die Struktur der JSON-Response (`success`, `expertId`, `fieldsAdded`).
+ * 4. Valdiert den entstandenen Datenbankzustand manuell über `pool.query`.
+ * 
+ * @category API Endpoints
+ */
 test("POST Handler with ExpertFields", async () => {
     // 1. Testdaten für POST-Request vorbereiten
     const postData = {

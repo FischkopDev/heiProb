@@ -10,9 +10,9 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "docs": "typedoc",
- "doc:md": "typedoc --plugin typedoc-plugin-markdown --entryPoints . --entryPointStrategy expand --router module --out docs --excludePrivate false --excludeProtected false --excludeNotDocumented false",
-  "doc:pdf": "npm run doc:md && find docs -name '*.md' -type f -exec cat {} + > temp_gesamt.md && npx md-to-pdf temp_gesamt.md && mv temp_gesamt.pdf docs/api-dokumentation.pdf && rm temp_gesamt.md"
-},
+    "doc:md": "typedoc --plugin typedoc-plugin-markdown --entryPoints . --entryPointStrategy expand --router module --out docs --excludePrivate false --excludeProtected false --excludeNotDocumented false",
+    "docs:pdf": "npm run docs && node generate-pdf.js"
+  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
@@ -31,12 +31,17 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concat-md": "^0.5.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "glob": "^13.0.6",
+    "md-to-pdf": "^5.2.5",
+    "pdf-lib": "^1.17.1",
     "prisma": "^7.8.0",
+    "puppeteer": "^24.43.1",
     "tailwindcss": "^4",
     "typedoc": "^0.28.19",
-    "typedoc-plugin-markdown": "^4.11.0",
+    "typedoc-plugin-markdown": "^4.12.0",
     "typedoc-plugin-mermaid": "^1.12.0",
     "typescript": "^5"
   }
